@@ -83,7 +83,7 @@ void ChatClient::clientGotNewMessage()
 
 void ChatClient::socketError(QAbstractSocket::SocketError error)
 {
-    QString strError = "Error: " +
+    QString strError =
             (error == QAbstractSocket::HostNotFoundError ?
                  "The host was not found." :
                  error == QAbstractSocket::RemoteHostClosedError ?
@@ -138,7 +138,7 @@ void ChatClient::processMessage(AuthorizationAnswer *msg)
     }
     else
     {
-        QString err = "Authorization error: " + msg->authorizationReason;
+        QString err = "Authorization problem: " + msg->authorizationReason;
         emit errorOccured(err);
     }
 }

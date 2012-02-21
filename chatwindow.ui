@@ -48,7 +48,7 @@
          <string>Connect</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLineEdit" name="hostEdit">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -61,7 +61,7 @@
          <string>localhost</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_2">
+       <widget class="QLineEdit" name="portEdit">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -74,7 +74,7 @@
          <string>33033</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_3">
+       <widget class="QLineEdit" name="usernameEdit">
         <property name="geometry">
          <rect>
           <x>180</x>
@@ -87,7 +87,7 @@
          <string>yoba</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="lineEdit_4">
+       <widget class="QLineEdit" name="passwordEdit">
         <property name="geometry">
          <rect>
           <x>180</x>
@@ -100,7 +100,7 @@
          <string>boyarin777</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="hostLbl">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -116,7 +116,7 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="portLbl">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -132,7 +132,7 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="usernameLbl">
         <property name="geometry">
          <rect>
           <x>180</x>
@@ -148,7 +148,7 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="passwordLbl">
         <property name="geometry">
          <rect>
           <x>180</x>
@@ -210,10 +210,10 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>lineEdit_3</tabstop>
-  <tabstop>lineEdit_4</tabstop>
+  <tabstop>hostEdit</tabstop>
+  <tabstop>portEdit</tabstop>
+  <tabstop>usernameEdit</tabstop>
+  <tabstop>passwordEdit</tabstop>
   <tabstop>connectButton</tabstop>
   <tabstop>ChatBrowser</tabstop>
   <tabstop>messageEdit</tabstop>

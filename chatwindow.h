@@ -2,7 +2,7 @@
 #define CHATWINDOW_H
 
 #include <QMainWindow>
-
+#include "ChatClient.h"
 namespace Ui {
 class ChatWindow;
 }
@@ -17,6 +17,12 @@ public:
     
 private:
     Ui::ChatWindow *ui;
+    ChatClient *client;
+private slots:
+    void connectToServer();
+    void clientError(QString &);
+    void displayMessage(QString &);
+    void clientAuthorized();
 };
 
 #endif // CHATWINDOW_H
