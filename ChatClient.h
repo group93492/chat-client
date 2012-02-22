@@ -3,8 +3,8 @@
 
 #include <QObject>
 #include <QTcpSocket>
-#include "../chat-server-polygon/ChatMessageSerializer.h"
-#include "../chat-server-polygon/ChatMessages.h"
+#include "ChatMessageSerializer.h"
+#include "ChatMessages.h"
 
 class ChatClient : public QObject
 {
@@ -19,9 +19,6 @@ private:
     void sendMessageToServer(ChatMessageBody *msgBody);
     void processMessage(InformationalMessage *msg);
     void processMessage(AuthorizationAnswer *msg);
-    //
-    void testStreams();
-    //
 public:
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(QString &un, QString &pass);
