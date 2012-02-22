@@ -7,6 +7,7 @@ ChatClient::ChatClient(QObject *parent) :
     userdataAssigned(false),
     authorized(false)
 {    
+    testStreams();
 }
 
 void ChatClient::setUserInfo(QString &un, QString &pass)
@@ -39,6 +40,55 @@ void ChatClient::clientConnected()
     delete msg;
 }
 
+
+ChatMessageBody *unpackMessage(QDataStream &msgStream)
+{
+    ChatMessageHeader *header = new ChatMessageHeader();
+    header->unpack(msgStream);
+    ChatMessageType msgType = (ChatMessageType) header->messageType;
+    ChatMessageBody *msgBody;
+    delete header;
+    switch(msgType)
+    {
+    case cmtInformationalMessage:
+        {
+            msgBody = new InformationalMessage();
+            break;
+        }
+    case cmtAuthorizationRequest:
+        {
+            msgBody = new AuthorizationRequest();
+            break;
+        }
+    case cmtAuthorizationAnswer:
+        {
+            msgBody = new AuthorizationAnswer();
+            break;
+        }
+    case cmtUnknown:
+        {
+            return NULL;
+        }
+    default:
+        {
+            qDebug() << "Unpacker found unknown message while unpacking";
+            return NULL;
+        }
+    }
+    msgBody->unpack(msgStream);
+    return msgBody;
+}
+
+void packMessage(QDataStream &msgStream, ChatMessageBody *msgBody)
+{
+    ChatMessageHeader *header = new ChatMessageHeader();
+    header->messageType = msgBody->messageType;
+    header->messageSize = sizeof(*msgBody);
+    header->pack(msgStream);
+    msgBody->pack(msgStream);
+    delete header;
+}
+
 void ChatClient::clientGotNewMessage()
 {
     qDebug() << "Cleint received new message";
@@ -55,7 +105,7 @@ void ChatClient::clientGotNewMessage()
         }
         if(socket->bytesAvailable() < nextBlockSize)
             break;
-        ChatMessageBody *newMessage = ChatMessageSerializer::unpackMessage(input);
+        ChatMessageBody *newMessage = unpackMessage(input);
         // want to use something like this:
         // processMessage(pClientSocket, newMessage);
         // but this fails with typization error.
@@ -81,6 +131,7 @@ void ChatClient::clientGotNewMessage()
     }
 }
 
+
 void ChatClient::socketError(QAbstractSocket::SocketError error)
 {
     QString strError =
@@ -95,7 +146,7 @@ void ChatClient::socketError(QAbstractSocket::SocketError error)
     qDebug() << strError;
 }
 
-void ChatClient::sendInformationalMessage(QString &body, QString &rcvr)
+void ChatClient::sendInformationalMessage(QString &rcvr, QString &body)
 {
     InformationalMessage *msg = new InformationalMessage();
     msg->sender = username;
@@ -110,7 +161,9 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody)
     QByteArray arrBlock;
     QDataStream output(&arrBlock, QIODevice::WriteOnly);
     output.setVersion(QDataStream::Qt_4_7);
-    ChatMessageSerializer::packMessage(output, msgBody);
+    output << quint16(0);
+    packMessage(output, msgBody);
+    output << quint16(arrBlock.size() - sizeof(quint16));
     tcpSocket->write(arrBlock);
 }
 
@@ -142,3 +195,20 @@ void ChatClient::processMessage(AuthorizationAnswer *msg)
         emit errorOccured(err);
     }
 }
+
+void ChatClient::testStreams()
+{
+    InformationalMessage *msgBody = new InformationalMessage;
+    msgBody->sender = "testsender";
+    msgBody->receiver = "testreceiver";
+    msgBody->messageBody = "textbody";
+    QByteArray arrBlock;
+    QDataStream output(&arrBlock, QIODevice::WriteOnly);
+    output.setVersion(QDataStream::Qt_4_7);
+    output << quint16(0);
+    packMessage(output, msgBody);
+    output << quint16(arrBlock.size() - sizeof(quint16));
+    tcpSocket->write(arrBlock);
+    delete msgBody;
+}
+

@@ -19,6 +19,9 @@ private:
     void sendMessageToServer(ChatMessageBody *msgBody);
     void processMessage(InformationalMessage *msg);
     void processMessage(AuthorizationAnswer *msg);
+    //
+    void testStreams();
+    //
 public:
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(QString &un, QString &pass);
@@ -32,7 +35,7 @@ private slots:
     void clientGotNewMessage();
     void socketError(QAbstractSocket::SocketError error);
 public slots:
-    void sendInformationalMessage(QString& body, QString &rcvr);
+    void sendInformationalMessage(QString& rcvr, QString &body);
 };
 
 #endif // CHATCLIENT_H

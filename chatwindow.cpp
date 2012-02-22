@@ -8,13 +8,14 @@ ChatWindow::ChatWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->messageEdit->setEnabled(false);
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
-    connect(ui->postButton, SIGNAL(clicked()), this, SLOT());
-    connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT());
+    connect(ui->postButton, SIGNAL(clicked()), this, SLOT(postMessage()));
+    connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
     client = new ChatClient(this);
     //connect part
     connect(client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
     connect(client, SIGNAL(errorOccured(QString&)), this, SLOT(clientError(QString&)));
     connect(client, SIGNAL(messageToDisplay(QString&)), this, SLOT(displayMessage(QString&)));
+    connect(this, SIGNAL(sendMessage(QString&,QString&)), client, SLOT(sendInformationalMessage(QString&,QString&)));
 }
 
 ChatWindow::~ChatWindow()
@@ -47,4 +48,12 @@ void ChatWindow::clientAuthorized()
 {
     ui->connectPropsGB->hide();
     ui->messageEdit->setEnabled(true);
+}
+
+void ChatWindow::postMessage()
+{
+    QString receiver = "*";
+    QString body = ui->messageEdit->text();
+    emit sendMessage(receiver, body);
+    ui->messageEdit->clear();
 }
