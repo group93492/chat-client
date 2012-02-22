@@ -12,13 +12,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         chatwindow.cpp \
-    ../chat-server-polygon/ChatMessageSerializer.cpp \
-    ../chat-server-polygon/ChatMessages.cpp \
+    ChatMessageSerializer.cpp \
+    ChatMessages.cpp \
     ChatClient.cpp
 
 HEADERS  += chatwindow.h \
-    ../chat-server-polygon/ChatMessageSerializer.h \
-    ../chat-server-polygon/ChatMessages.h \
+    ChatMessageSerializer.h \
+    ChatMessages.h \
     ChatClient.h
 
 FORMS    += chatwindow.ui
