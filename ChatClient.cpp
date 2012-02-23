@@ -82,8 +82,9 @@ void ChatClient::clientGotNewMessage()
             }
         }
         //looks fucking ugly, yeah?
-        nextBlockSize = 0;
+
     }
+    nextBlockSize = 0;
     delete newMessage;
 }
 
@@ -126,8 +127,9 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody)
 void ChatClient::processMessage(ChannelMessage *msg)
 {
     qDebug() << "Processing channel message:" << msg->getSender() << msg->getReceiver() << msg->getMessageText();
-    QString message = "%1: %2";
-    message.arg(msg->getSender()).arg(msg->getMessageText());
+    QString message = QString("%1: %2")
+                        .arg(msg->getSender())
+                        .arg(msg->getMessageText());
     emit messageToDisplay(message);
 }
 
