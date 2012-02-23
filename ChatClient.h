@@ -17,7 +17,7 @@ private:
     bool userdataAssigned;
     bool authorized;
     void sendMessageToServer(ChatMessageBody *msgBody);
-    void processMessage(InformationalMessage *msg);
+    void processMessage(ChannelMessage *msg);
     void processMessage(AuthorizationAnswer *msg);
 public:
     explicit ChatClient(QObject *parent = 0);
@@ -32,7 +32,7 @@ private slots:
     void clientGotNewMessage();
     void socketError(QAbstractSocket::SocketError error);
 public slots:
-    void sendInformationalMessage(QString& rcvr, QString &body);
+    void sendChannelMessage(QString& rcvr, QString &body);
 };
 
 #endif // CHATCLIENT_H

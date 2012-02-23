@@ -33,8 +33,8 @@ void ChatClient::clientConnected()
     //we were connected to server
     //now we need to authorize
     AuthorizationRequest *msg = new AuthorizationRequest();
-    msg->username = this->username;
-    msg->password = this->password;
+    msg->setUsername(this->username);
+    msg->setPassword(this->password);
     sendMessageToServer(msg);
     delete msg;
 }
@@ -45,6 +45,7 @@ void ChatClient::clientGotNewMessage()
     QTcpSocket *socket = (QTcpSocket*)sender();
     QDataStream input(socket);
     input.setVersion(QDataStream::Qt_4_7);
+    ChatMessageBody *newMessage;
     while (true)
     {
         if(!nextBlockSize)
@@ -55,30 +56,35 @@ void ChatClient::clientGotNewMessage()
         }
         if(socket->bytesAvailable() < nextBlockSize)
             break;
-        ChatMessageBody *newMessage = ChatMessageSerializer::unpackMessage(input);
+        newMessage = ChatMessageSerializer::unpackMessage(input);
         // want to use something like this:
         // processMessage(pClientSocket, newMessage);
         // but this fails with typization error.
         // (in fact, i don't think it shoud fail, it looks correct to me)
         // i hope that dream will come true
         // but now could do only like this
-        switch ((ChatMessageType) newMessage->messageType)
+        switch ((ChatMessageType) newMessage->getMessageType())
         {
-        case cmtInformationalMessage:
+        case cmtChannelMessage:
             {
-                processMessage((InformationalMessage *) newMessage);
+                processMessage((ChannelMessage *) newMessage);
                 break;
             }
-        case cmtAuthorizationRequest:
+        case cmtAuthorizationAnswer:
             {
                 processMessage((AuthorizationAnswer *) newMessage);
                 break;
             }
+        default:
+            {
+                qDebug() << "Client received unknown-typed message";
+                break;
+            }
         }
         //looks fucking ugly, yeah?
-        delete newMessage;
         nextBlockSize = 0;
     }
+    delete newMessage;
 }
 
 
@@ -96,12 +102,12 @@ void ChatClient::socketError(QAbstractSocket::SocketError error)
     qDebug() << strError;
 }
 
-void ChatClient::sendInformationalMessage(QString &rcvr, QString &body)
+void ChatClient::sendChannelMessage(QString &rcvr, QString &body)
 {
-    InformationalMessage *msg = new InformationalMessage();
-    msg->sender = username;
-    msg->receiver = rcvr;
-    msg->messageBody = body;
+    ChannelMessage *msg = new ChannelMessage();
+    msg->setSender(username);
+    msg->setReceiver(rcvr);
+    msg->setMessageText(body);
     sendMessageToServer(msg);
     delete msg;
 }
@@ -117,22 +123,22 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody)
     tcpSocket->write(arrBlock);
 }
 
-void ChatClient::processMessage(InformationalMessage *msg)
+void ChatClient::processMessage(ChannelMessage *msg)
 {
-    qDebug() << "Processing informational message:" << msg->sender << msg->receiver << msg->messageBody;
+    qDebug() << "Processing channel message:" << msg->getSender() << msg->getReceiver() << msg->getMessageText();
     QString message = "%1: %2";
-    message.arg(msg->sender).arg(msg->messageBody);
+    message.arg(msg->getSender()).arg(msg->getMessageText());
     emit messageToDisplay(message);
 }
 
 void ChatClient::processMessage(AuthorizationAnswer *msg)
 {
-    qDebug() << "Processing authorization answer:" << msg->authorizationResult;
+    qDebug() << "Processing authorization answer:" << msg->getAuthorizationResult();
     if (authorized)
     {
         qDebug() << "Allready authorizated, don't need to process that";
     }
-    if (msg->authorizationResult)
+    if (msg->getAuthorizationResult())
     {
         authorized = true;
         //QString disp = "You passed authorization on server: " + tcpSocket->peerAddress().toString();
@@ -141,7 +147,7 @@ void ChatClient::processMessage(AuthorizationAnswer *msg)
     }
     else
     {
-        QString err = "Authorization problem: " + msg->authorizationReason;
+        QString err = "Authorization problem: " + msg->getDenialReason();
         emit errorOccured(err);
     }
 }

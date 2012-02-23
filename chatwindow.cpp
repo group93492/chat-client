@@ -15,7 +15,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
     connect(client, SIGNAL(errorOccured(QString&)), this, SLOT(clientError(QString&)));
     connect(client, SIGNAL(messageToDisplay(QString&)), this, SLOT(displayMessage(QString&)));
-    connect(this, SIGNAL(sendMessage(QString&,QString&)), client, SLOT(sendInformationalMessage(QString&,QString&)));
+    connect(this, SIGNAL(sendMessage(QString&,QString&)), client, SLOT(sendChannelMessage(QString&,QString&)));
 }
 
 ChatWindow::~ChatWindow()
@@ -48,6 +48,7 @@ void ChatWindow::clientAuthorized()
 {
     ui->connectPropsGB->hide();
     ui->messageEdit->setEnabled(true);
+    ui->ChatBrowser->append("Succesfully connected and authorized on server");
 }
 
 void ChatWindow::postMessage()
