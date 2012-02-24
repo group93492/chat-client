@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QTcpSocket>
-#include "ChatMessageSerializer.h"
 #include "ChatMessages.h"
 
 class ChatClient : public QObject

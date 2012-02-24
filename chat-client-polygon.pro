@@ -12,12 +12,10 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         chatwindow.cpp \
-    ChatMessageSerializer.cpp \
     ChatMessages.cpp \
     ChatClient.cpp
 
 HEADERS  += chatwindow.h \
-    ChatMessageSerializer.h \
     ChatMessages.h \
     ChatClient.h
 

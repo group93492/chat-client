@@ -45,7 +45,6 @@ void ChatClient::clientGotNewMessage()
     QTcpSocket *socket = (QTcpSocket*)sender();
     QDataStream input(socket);
     input.setVersion(QDataStream::Qt_4_7);
-    ChatMessageBody *newMessage;
     while (true)
     {
         if(!nextBlockSize)
@@ -56,36 +55,38 @@ void ChatClient::clientGotNewMessage()
         }
         if(socket->bytesAvailable() < nextBlockSize)
             break;
-        newMessage = ChatMessageSerializer::unpackMessage(input);
-        // want to use something like this:
-        // processMessage(pClientSocket, newMessage);
-        // but this fails with typization error.
-        // (in fact, i don't think it shoud fail, it looks correct to me)
-        // i hope that dream will come true
-        // but now could do only like this
-        switch ((ChatMessageType) newMessage->getMessageType())
+        //message in in <input>, unpack it
+        ChatMessageHeader *header = new ChatMessageHeader();
+        header->unpack(input);
+        ChatMessageType msgType = (ChatMessageType) header->getMessageType();
+        delete header;
+        switch (msgType)
         {
         case cmtChannelMessage:
             {
-                processMessage((ChannelMessage *) newMessage);
+                ChannelMessage *msg = new ChannelMessage();
+                msg->unpack(input);
+                processMessage(msg);
+                delete msg;
                 break;
             }
         case cmtAuthorizationAnswer:
             {
-                processMessage((AuthorizationAnswer *) newMessage);
+                AuthorizationAnswer *msg = new AuthorizationAnswer();
+                msg->unpack(input);
+                processMessage(msg);
+                delete msg;
                 break;
             }
         default:
             {
                 qDebug() << "Client received unknown-typed message";
-                break;
+                return;
             }
         }
-        //looks fucking ugly, yeah?
 
     }
     nextBlockSize = 0;
-    delete newMessage;
 }
 
 
@@ -119,7 +120,14 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody)
     QDataStream output(&arrBlock, QIODevice::WriteOnly);
     output.setVersion(QDataStream::Qt_4_7);
     output << quint16(0);
-    ChatMessageSerializer::packMessage(output, msgBody);
+//    ChatMessageSerializer::packMessage(output, msgBody);
+    ChatMessageHeader *header = new ChatMessageHeader();
+    header->setMessageType(msgBody->getMessageType());
+    header->setMessageSize(sizeof(*msgBody));
+    header->pack(output);
+    msgBody->pack(output);
+    delete header;
+
     output << quint16(arrBlock.size() - sizeof(quint16));
     tcpSocket->write(arrBlock);
 }
