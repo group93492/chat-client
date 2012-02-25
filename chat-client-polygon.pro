@@ -10,13 +10,13 @@ TARGET = chat-client-polygon
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        chatwindow.cpp \
-    ChatMessages.cpp \
-    ChatClient.cpp
+SOURCES +=  main.cpp\
+            chatwindow.cpp \
+            ChatClient.cpp \
+            ChatMessages.cpp
 
 HEADERS  += chatwindow.h \
-    ChatMessages.h \
-    ChatClient.h
+            ChatClient.h \
+            ChatMessages.h
 
 FORMS    += chatwindow.ui

@@ -1,154 +1,107 @@
 #include "ChatMessages.h"
-#include <QDataStream>
-#include <QMetaObject>
-#include <QMetaProperty>
 
-bool Serializable::pack(QDataStream &stream)
-{
-    if (stream.status() != QDataStream::Ok)
-        return false;
-    for(int propIndex = this->metaObject()->propertyOffset(); propIndex < this->metaObject()->propertyCount(); ++propIndex)
-    {
-        QMetaProperty prop = this->metaObject()->property(propIndex);
-        stream << this->property(prop.name());
-    }
-    return true;
-}
-
-bool Serializable::unpack(QDataStream &stream)
-{
-    if (stream.status() != QDataStream::Ok)
-        return false;
-    for(int propIndex = this->metaObject()->propertyOffset(); propIndex < this->metaObject()->propertyCount(); ++propIndex)
-    {
-        QMetaProperty prop = this->metaObject()->property(propIndex);
-        QVariant value;
-        stream >> value;
-        this->setProperty(prop.name(), value);
-    }
-    return true;
-}
-
-Serializable::Serializable()
+ChatMessageBody::ChatMessageBody()
 {
 }
 
-quint8 ChatMessageHeader::getMessageType()
+bool ChatMessageBody::pack(QDataStream &stream)
 {
-    return m_messageType;
 }
 
-void ChatMessageHeader::setMessageType(const quint8 type)
+bool ChatMessageBody::unpack(QDataStream &stream)
 {
-    m_messageType = type;
-}
-
-quint32 ChatMessageHeader::getMessageSize()
-{
-    return m_messageSize;
-}
-
-void ChatMessageHeader::setMessageSize(const quint32 size)
-{
-    m_messageSize = size;
 }
 
 ChatMessageHeader::ChatMessageHeader()
 {
 }
 
-quint8 ChatMessageBody::getMessageType()
+ChatMessageHeader::ChatMessageHeader(ChatMessageBody *msgBody)
 {
-    return m_messageType;
+    messageType = msgBody->messageType;
+    messageSize = sizeof(*msgBody);
 }
 
-ChatMessageBody::ChatMessageBody()
+bool ChatMessageHeader::pack(QDataStream &stream)
 {
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream << messageType;
+    return true;
 }
 
-bool AuthorizationAnswer::getAuthorizationResult()
+bool ChatMessageHeader::unpack(QDataStream &stream)
 {
-    return m_authorizationResult;
-}
-
-void AuthorizationAnswer::setAuthorizationResult(const bool result)
-{
-    m_authorizationResult = result;
-}
-
-QString &AuthorizationAnswer::getDenialReason()
-{
-    return m_denialReason;
-}
-
-void AuthorizationAnswer::setDenialReason(const QString &reason)
-{
-    m_denialReason = reason;
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream >> messageType;
+    return true;
 }
 
 AuthorizationAnswer::AuthorizationAnswer()
 {
-    m_messageType = cmtAuthorizationAnswer;
+    messageType = cmtAuthorizationAnswer;
+}
+
+bool AuthorizationAnswer::pack(QDataStream &stream)
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    if(authorizationResult)
+        stream << authorizationResult;
+    else
+        stream << authorizationResult << denialReason;
+    return true;
+}
+
+bool AuthorizationAnswer::unpack(QDataStream &stream)
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream >> authorizationResult;
+    if(!authorizationResult)
+        stream >> denialReason;
+    return true;
 }
 
 AuthorizationRequest::AuthorizationRequest()
 {
-    m_messageType = cmtAuthorizationRequest;
+    messageType = cmtAuthorizationRequest;
 }
 
-QString &AuthorizationRequest::getUsername()
+bool AuthorizationRequest::pack(QDataStream &stream)
 {
-    return m_username;
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream << username << password;
+    return true;
 }
 
-void AuthorizationRequest::setUsername(const QString &un)
+bool AuthorizationRequest::unpack(QDataStream &stream)
 {
-    m_username = un;
-}
-
-QString &AuthorizationRequest::getPassword()
-{
-    return m_password;
-}
-
-void AuthorizationRequest::setPassword(const QString &pw)
-{
-    m_password = pw;
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream >> username >> password;
+    return true;
 }
 
 ChannelMessage::ChannelMessage()
 {
-    m_messageType = cmtChannelMessage;
+    messageType = cmtChannelMessage;
 }
 
-QString &ChannelMessage::getSender()
+bool ChannelMessage::pack(QDataStream &stream)
 {
-    return m_sender;
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream << sender << receiver << messageText;
+    return true;
 }
 
-void ChannelMessage::setSender(const QString &sender)
+bool ChannelMessage::unpack(QDataStream &stream)
 {
-    m_sender = sender;
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream >> sender >> receiver >> messageText;
+    return true;
 }
-
-QString &ChannelMessage::getReceiver()
-{
-    return m_receiver;
-}
-
-void ChannelMessage::setReceiver(const QString &receiver)
-{
-    m_receiver = receiver;
-}
-
-QString &ChannelMessage::getMessageText()
-{
-    return m_messageText;
-}
-
-void ChannelMessage::setMessageText(const QString &text)
-{
-    m_messageText = text;
-}
-
-

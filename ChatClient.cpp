@@ -33,8 +33,8 @@ void ChatClient::clientConnected()
     //we were connected to server
     //now we need to authorize
     AuthorizationRequest *msg = new AuthorizationRequest();
-    msg->setUsername(this->username);
-    msg->setPassword(this->password);
+    msg->username = this->username;
+    msg->password = this->password;
     sendMessageToServer(msg);
     delete msg;
 }
@@ -58,7 +58,7 @@ void ChatClient::clientGotNewMessage()
         //message in in <input>, unpack it
         ChatMessageHeader *header = new ChatMessageHeader();
         header->unpack(input);
-        ChatMessageType msgType = (ChatMessageType) header->getMessageType();
+        ChatMessageType msgType = (ChatMessageType) header->messageType;
         delete header;
         switch (msgType)
         {
@@ -107,9 +107,9 @@ void ChatClient::socketError(QAbstractSocket::SocketError error)
 void ChatClient::sendChannelMessage(QString &rcvr, QString &body)
 {
     ChannelMessage *msg = new ChannelMessage();
-    msg->setSender(username);
-    msg->setReceiver(rcvr);
-    msg->setMessageText(body);
+    msg->sender = username;
+    msg->receiver = rcvr;
+    msg->messageText = body;
     sendMessageToServer(msg);
     delete msg;
 }
@@ -121,9 +121,7 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody)
     output.setVersion(QDataStream::Qt_4_7);
     output << quint16(0);
 //    ChatMessageSerializer::packMessage(output, msgBody);
-    ChatMessageHeader *header = new ChatMessageHeader();
-    header->setMessageType(msgBody->getMessageType());
-    header->setMessageSize(sizeof(*msgBody));
+    ChatMessageHeader *header = new ChatMessageHeader(msgBody);
     header->pack(output);
     msgBody->pack(output);
     delete header;
@@ -134,21 +132,21 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody)
 
 void ChatClient::processMessage(ChannelMessage *msg)
 {
-    qDebug() << "Processing channel message:" << msg->getSender() << msg->getReceiver() << msg->getMessageText();
+    qDebug() << "Processing channel message:" << msg->sender << msg->receiver << msg->messageText;
     QString message = QString("%1: %2")
-                        .arg(msg->getSender())
-                        .arg(msg->getMessageText());
+                        .arg(msg->sender)
+                        .arg(msg->messageText);
     emit messageToDisplay(message);
 }
 
 void ChatClient::processMessage(AuthorizationAnswer *msg)
 {
-    qDebug() << "Processing authorization answer:" << msg->getAuthorizationResult();
+    qDebug() << "Processing authorization answer:" << msg->authorizationResult;
     if (authorized)
     {
         qDebug() << "Allready authorizated, don't need to process that";
     }
-    if (msg->getAuthorizationResult())
+    if (msg->authorizationResult)
     {
         authorized = true;
         //QString disp = "You passed authorization on server: " + tcpSocket->peerAddress().toString();
@@ -157,7 +155,7 @@ void ChatClient::processMessage(AuthorizationAnswer *msg)
     }
     else
     {
-        QString err = "Authorization problem: " + msg->getDenialReason();
+        QString err = "Authorization problem: " + msg->denialReason;
         emit errorOccured(err);
     }
 }
