@@ -6,7 +6,7 @@
 
 QT       += core gui network
 
-TARGET = chat-client-polygon
+TARGET = chat-client
 TEMPLATE = app
 
 
