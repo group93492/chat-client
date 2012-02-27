@@ -84,7 +84,6 @@ void ChatClient::clientGotNewMessage()
                 return;
             }
         }
-
     }
     m_nextBlockSize = 0;
 }
@@ -143,9 +142,7 @@ void ChatClient::processMessage(AuthorizationAnswer *msg)
 {
     qDebug() << "Processing authorization answer:" << msg->authorizationResult;
     if (m_authorized)
-    {
         qDebug() << "Allready authorizated, don't need to process that";
-    }
     if (msg->authorizationResult)
     {
         m_authorized = true;

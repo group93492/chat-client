@@ -18,20 +18,25 @@ private:
     void sendMessageToServer(ChatMessageBody *msgBody);
     void processMessage(ChannelMessage *msg);
     void processMessage(AuthorizationAnswer *msg);
+
 public:
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(QString &un, QString &pass);
     bool start(QString &host, quint16 port);
+
 signals:
     void errorOccured(QString &);
     void messageToDisplay(QString &);
     void clientAuthorized();
+
 private slots:
     void clientConnected();
     void clientGotNewMessage();
     void socketError(QAbstractSocket::SocketError error);
+
 public slots:
     void sendChannelMessage(QString& rcvr, QString &body);
+
 };
 
 #endif // CHATCLIENT_H
