@@ -17,7 +17,7 @@ public:
     
 private:
     Ui::ChatWindow *ui;
-    ChatClient *client;
+    ChatClient *m_client;
 
 signals:
     void sendMessage(QString &, QString &);

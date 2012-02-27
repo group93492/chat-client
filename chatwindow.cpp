@@ -10,12 +10,12 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     connect(ui->postButton, SIGNAL(clicked()), this, SLOT(postMessage()));
     connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
-    client = new ChatClient(this);
+    m_client = new ChatClient(this);
     //connect part
-    connect(client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
-    connect(client, SIGNAL(errorOccured(QString&)), this, SLOT(clientError(QString&)));
-    connect(client, SIGNAL(messageToDisplay(QString&)), this, SLOT(displayMessage(QString&)));
-    connect(this, SIGNAL(sendMessage(QString&,QString&)), client, SLOT(sendChannelMessage(QString&,QString&)));
+    connect(m_client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
+    connect(m_client, SIGNAL(errorOccured(QString&)), this, SLOT(clientError(QString&)));
+    connect(m_client, SIGNAL(messageToDisplay(QString&)), this, SLOT(displayMessage(QString&)));
+    connect(this, SIGNAL(sendMessage(QString&,QString&)), m_client, SLOT(sendChannelMessage(QString&,QString&)));
 }
 
 ChatWindow::~ChatWindow()
@@ -29,8 +29,8 @@ void ChatWindow::connectToServer()
     quint16 port = ui->portEdit->text().toUInt();
     QString username = ui->usernameEdit->text();
     QString password = ui->passwordEdit->text();
-    client->setUserInfo(username, password);
-    client->start(host, port);
+    m_client->setUserInfo(username, password);
+    m_client->start(host, port);
 }
 
 void ChatWindow::clientError(QString &errorText)

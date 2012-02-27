@@ -9,12 +9,12 @@ class ChatClient : public QObject
 {
     Q_OBJECT
 private:
-    QTcpSocket *tcpSocket;
-    quint16 nextBlockSize;
-    QString username;
-    QString password;   //password stored in string, kekeke
-    bool userdataAssigned;
-    bool authorized;
+    QTcpSocket *m_tcpSocket;
+    quint16 m_nextBlockSize;
+    QString m_username;
+    QString m_password;   //password stored in string, kekeke
+    bool m_userdataAssigned;
+    bool m_authorized;
     void sendMessageToServer(ChatMessageBody *msgBody);
     void processMessage(ChannelMessage *msg);
     void processMessage(AuthorizationAnswer *msg);
