@@ -9,14 +9,14 @@ ChatClient::ChatClient(QObject *parent) :
 {    
 }
 
-void ChatClient::setUserInfo(QString &un, QString &pass)
+void ChatClient::setUserInfo(const QString &un, const QString &pass)
 {
     m_username = un;
     m_password = pass;
     m_userdataAssigned = !((m_username.isEmpty()) || (m_password.isEmpty()));
 }
 
-bool ChatClient::start(QString &host, quint16 port)
+bool ChatClient::start(const QString &host, const quint16 &port)
 {
     if (!m_userdataAssigned)
         return false;
@@ -28,7 +28,7 @@ bool ChatClient::start(QString &host, quint16 port)
     return true;
 }
 
-void ChatClient::clientConnected()
+void ChatClient::clientConnected() const
 {
     //we were connected to server
     //now we need to authorize
@@ -41,7 +41,7 @@ void ChatClient::clientConnected()
 
 void ChatClient::clientGotNewMessage()
 {
-    qDebug() << "Cleint received new message";
+    qDebug() << "Client received new message";
     QTcpSocket *socket = (QTcpSocket*)sender();
     QDataStream input(socket);
     input.setVersion(QDataStream::Qt_4_7);
@@ -86,7 +86,7 @@ void ChatClient::clientGotNewMessage()
 }
 
 
-void ChatClient::socketError(QAbstractSocket::SocketError error)
+void ChatClient::socketError(const QAbstractSocket::SocketError &error)
 {
     QString strError =
             (error == QAbstractSocket::HostNotFoundError ?
@@ -100,7 +100,7 @@ void ChatClient::socketError(QAbstractSocket::SocketError error)
     qDebug() << strError;
 }
 
-void ChatClient::sendChannelMessage(QString &rcvr, QString &body)
+void ChatClient::sendChannelMessage(const QString &rcvr, const QString &body) const
 {
     ChannelMessage *msg = new ChannelMessage();
     msg->sender = m_username;
@@ -110,7 +110,7 @@ void ChatClient::sendChannelMessage(QString &rcvr, QString &body)
     delete msg;
 }
 
-void ChatClient::sendMessageToServer(ChatMessageBody *msgBody)
+void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 {
     QByteArray arrBlock;
     QDataStream output(&arrBlock, QIODevice::WriteOnly);
@@ -126,7 +126,7 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody)
     m_tcpSocket->write(arrBlock);
 }
 
-void ChatClient::processMessage(ChannelMessage *msg)
+void ChatClient::processMessage(const ChannelMessage *msg)
 {
     qDebug() << "Processing channel message:" << msg->sender << msg->receiver << msg->messageText;
     QString message = QString("%1: %2")
@@ -135,7 +135,7 @@ void ChatClient::processMessage(ChannelMessage *msg)
     emit messageToDisplay(message);
 }
 
-void ChatClient::processMessage(AuthorizationAnswer *msg)
+void ChatClient::processMessage(const AuthorizationAnswer *msg)
 {
     qDebug() << "Processing authorization answer:" << msg->authorizationResult;
     if (m_authorized)

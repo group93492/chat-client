@@ -13,9 +13,9 @@ ChatWindow::ChatWindow(QWidget *parent) :
     m_client = new ChatClient(this);
     //connect part
     connect(m_client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
-    connect(m_client, SIGNAL(errorOccured(QString&)), this, SLOT(clientError(QString&)));
-    connect(m_client, SIGNAL(messageToDisplay(QString&)), this, SLOT(displayMessage(QString&)));
-    connect(this, SIGNAL(sendMessage(QString&,QString&)), m_client, SLOT(sendChannelMessage(QString&,QString&)));
+    connect(m_client, SIGNAL(errorOccured(const QString&)), this, SLOT(clientError(const QString&)));
+    connect(m_client, SIGNAL(messageToDisplay(const QString&)), this, SLOT(displayMessage(const QString&)));
+    connect(this, SIGNAL(sendMessage(const QString&, const QString&)), m_client, SLOT(sendChannelMessage(const QString&, const QString&)));
 }
 
 ChatWindow::~ChatWindow()
@@ -33,13 +33,13 @@ void ChatWindow::connectToServer()
     m_client->start(host, port);
 }
 
-void ChatWindow::clientError(QString &errorText)
+void ChatWindow::clientError(const QString &errorText)
 {
     QString errmsg = "Error: " + errorText;
     ui->ChatBrowser->append(errmsg);
 }
 
-void ChatWindow::displayMessage(QString &msgText)
+void ChatWindow::displayMessage(const QString &msgText)
 {
     ui->ChatBrowser->append(msgText);
 }

@@ -15,27 +15,27 @@ private:
     QString m_password;   //password stored in string, kekeke
     bool m_userdataAssigned;
     bool m_authorized;
-    void sendMessageToServer(ChatMessageBody *msgBody);
-    void processMessage(ChannelMessage *msg);
-    void processMessage(AuthorizationAnswer *msg);
+    void sendMessageToServer(ChatMessageBody *msgBody) const;
+    void processMessage(const ChannelMessage *msg);
+    void processMessage(const AuthorizationAnswer *msg);
 
 public:
     explicit ChatClient(QObject *parent = 0);
-    void setUserInfo(QString &un, QString &pass);
-    bool start(QString &host, quint16 port);
+    void setUserInfo(const QString &un, const QString &pass);
+    bool start(const QString &host, const quint16 &port);
 
 signals:
-    void errorOccured(QString &);
-    void messageToDisplay(QString &);
+    void errorOccured(const QString &);
+    void messageToDisplay(const QString &);
     void clientAuthorized();
 
 private slots:
-    void clientConnected();
+    void clientConnected() const;
     void clientGotNewMessage();
-    void socketError(QAbstractSocket::SocketError error);
+    void socketError(const QAbstractSocket::SocketError &error);
 
 public slots:
-    void sendChannelMessage(QString& rcvr, QString &body);
+    void sendChannelMessage(const QString &rcvr, const QString &body) const;
 
 };
 

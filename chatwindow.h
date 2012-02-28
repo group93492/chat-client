@@ -20,12 +20,12 @@ private:
     ChatClient *m_client;
 
 signals:
-    void sendMessage(QString &, QString &);
+    void sendMessage(const QString &, const QString &);
 
 private slots:
     void connectToServer();
-    void clientError(QString &);
-    void displayMessage(QString &);
+    void clientError(const QString &);
+    void displayMessage(const QString &);
     void clientAuthorized();
     void postMessage();
 };
