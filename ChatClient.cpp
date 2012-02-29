@@ -77,7 +77,7 @@ void ChatClient::clientGotNewMessage()
             }
         default:
             {
-                qDebug() << "Client received unknown-typed message";
+                qDebug() << "Client received unknown-typed message" << msgType;
                 return;
             }
         }
@@ -121,7 +121,6 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
     header->pack(output);
     msgBody->pack(output);
     delete header;
-
     output << quint16(arrBlock.size() - sizeof(quint16));
     m_tcpSocket->write(arrBlock);
 }
