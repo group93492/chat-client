@@ -8,7 +8,8 @@ enum ChatMessageType
     cmtUnknown,
     cmtChannelMessage,
     cmtAuthorizationRequest,
-    cmtAuthorizationAnswer
+    cmtAuthorizationAnswer,
+    cmtDisconnectMessage
     /*etc*/
 };
 
@@ -64,6 +65,16 @@ public:
     QString sender;
     QString receiver;
     QString messageText;
+    bool pack(QDataStream &stream) const;
+    bool unpack(QDataStream &stream);
+};
+
+class DisconnectMessage : public ChatMessageBody
+{
+public:
+    DisconnectMessage();
+    DisconnectMessage(QDataStream &stream);
+    QString sender;
     bool pack(QDataStream &stream) const;
     bool unpack(QDataStream &stream);
 };

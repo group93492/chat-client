@@ -75,6 +75,13 @@ void ChatClient::clientGotNewMessage()
                 delete msg;
                 break;
             }
+        case cmtDisconnectMessage:
+            {
+                DisconnectMessage *msg = new DisconnectMessage(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
@@ -107,6 +114,16 @@ void ChatClient::sendChannelMessage(const QString &rcvr, const QString &body) co
     msg->receiver = rcvr;
     msg->messageText = body;
     sendMessageToServer(msg);
+    delete msg;
+}
+
+void ChatClient::sendDisconnectMessage() const
+{
+    DisconnectMessage *msg = new DisconnectMessage();
+    msg->sender = m_username;
+    sendMessageToServer(msg);
+    m_tcpSocket->close();
+    QString message = "Disconnect from server";
     delete msg;
 }
 
@@ -151,5 +168,13 @@ void ChatClient::processMessage(const AuthorizationAnswer *msg)
         QString err = "Authorization problem: " + msg->denialReason;
         emit errorOccured(err);
     }
+}
+
+void ChatClient::processMessage(const DisconnectMessage *msg)
+{
+    QString message;
+    message = msg->sender + " has left from server";
+    qDebug() << "Processing disconnect message from:" << msg->sender;
+    emit messageToDisplay(message);
 }
 

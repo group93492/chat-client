@@ -39,7 +39,7 @@
         <property name="geometry">
          <rect>
           <x>350</x>
-          <y>60</y>
+          <y>40</y>
           <width>111</width>
           <height>31</height>
          </rect>
@@ -187,6 +187,22 @@
      <string>Post</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="disconnectButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>440</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Disconnect</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -194,7 +210,7 @@
      <x>0</x>
      <y>0</y>
      <width>482</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

@@ -21,13 +21,13 @@ private:
 
 signals:
     void sendMessage(const QString &, const QString &);
-
 private slots:
     void connectToServer();
     void clientError(const QString &);
     void displayMessage(const QString &);
     void clientAuthorized();
     void postMessage();
+    void on_disconnectButton_clicked();
 };
 
 #endif // CHATWINDOW_H

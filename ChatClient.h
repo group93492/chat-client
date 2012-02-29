@@ -18,6 +18,7 @@ private:
     void sendMessageToServer(ChatMessageBody *msgBody) const;
     void processMessage(const ChannelMessage *msg);
     void processMessage(const AuthorizationAnswer *msg);
+    void processMessage(const DisconnectMessage *msg);
 
 public:
     explicit ChatClient(QObject *parent = 0);
@@ -36,6 +37,7 @@ private slots:
 
 public slots:
     void sendChannelMessage(const QString &rcvr, const QString &body) const;
+    void sendDisconnectMessage() const;
 
 };
 
