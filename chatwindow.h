@@ -24,10 +24,12 @@ signals:
 private slots:
     void connectToServer();
     void clientError(const QString &);
-    void displayMessage(const QString &);
+    void displayMessage(const QString &msgText);
+    void channelListUpdate(QStringList &channels);
     void clientAuthorized();
     void postMessage();
     void on_disconnectButton_clicked();
+    void on_registerButton_clicked();
 };
 
 #endif // CHATWINDOW_H

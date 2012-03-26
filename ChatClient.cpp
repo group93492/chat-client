@@ -82,6 +82,20 @@ void ChatClient::clientGotNewMessage()
                 delete msg;
                 break;
             }
+        case cmtRegistrationAnswer:
+            {
+                RegistrationAnswer *msg = new RegistrationAnswer(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
+        case cmtChannelListMessage:
+            {
+                ChannelListMessage *msg = new ChannelListMessage(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
@@ -176,5 +190,21 @@ void ChatClient::processMessage(const DisconnectMessage *msg)
     message = msg->sender + " has left from server";
     qDebug() << "Processing disconnect message from:" << msg->sender;
     emit messageToDisplay(message);
+}
+
+void ChatClient::processMessage(const RegistrationAnswer *msg)
+{
+    QString text;
+    if (msg->registrationResult)
+        text = "Registated succesfully.";
+    else
+        text = "Registration request was denied. Reason: " + msg->denialReason;
+    emit messageToDisplay(text);
+}
+
+void ChatClient::processMessage(const ChannelListMessage *msg)
+{
+    channelList = msg->channelList;
+    emit displayChannelList(channelList);
 }
 

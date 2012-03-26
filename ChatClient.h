@@ -15,11 +15,13 @@ private:
     QString m_password;   //password stored in string, kekeke
     bool m_userdataAssigned;
     bool m_authorized;
+    QStringList channelList;
     void sendMessageToServer(ChatMessageBody *msgBody) const;
     void processMessage(const ChannelMessage *msg);
     void processMessage(const AuthorizationAnswer *msg);
     void processMessage(const DisconnectMessage *msg);
-
+    void processMessage(const RegistrationAnswer *msg);
+    void processMessage(const ChannelListMessage *msg);
 public:
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(const QString &un, const QString &pass);
@@ -29,6 +31,7 @@ signals:
     void errorOccured(const QString &);
     void messageToDisplay(const QString &);
     void clientAuthorized();
+    void displayChannelList(QStringList &);
 
 private slots:
     void clientConnected() const;

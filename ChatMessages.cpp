@@ -103,6 +103,7 @@ ChannelMessage::ChannelMessage(QDataStream &stream)
     unpack(stream);
     //bad news that we will fault if stream.status is not ok because
     //we hadn't any chance to notice about it through constructor
+    //- one more lack of overloaded constructor
 }
 
 bool ChannelMessage::pack(QDataStream &stream) const
@@ -145,5 +146,122 @@ bool DisconnectMessage::unpack(QDataStream &stream)
     if (stream.status() != QDataStream::Ok)
         return false;
     stream >> sender;
+    return true;
+}
+
+RegistrationRequest::RegistrationRequest()
+{
+    messageType = cmtRegistrationRequest;
+}
+
+RegistrationRequest::RegistrationRequest(QDataStream &stream)
+{
+    messageType = cmtRegistrationRequest;
+    unpack(stream);
+}
+
+bool RegistrationRequest::pack(QDataStream &stream) const
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream << username << password;
+    return true;
+}
+
+bool RegistrationRequest::unpack(QDataStream &stream)
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream >> username >> password;
+    return true;
+}
+
+RegistrationAnswer::RegistrationAnswer()
+{
+    messageType = cmtRegistrationAnswer;
+}
+
+RegistrationAnswer::RegistrationAnswer(QDataStream &stream)
+{
+    messageType = cmtRegistrationAnswer;
+    unpack(stream);
+}
+
+bool RegistrationAnswer::pack(QDataStream &stream) const
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    if(registrationResult)
+        stream << registrationResult;
+    else
+        stream << registrationResult << denialReason;
+    return true;
+}
+
+bool RegistrationAnswer::unpack(QDataStream &stream)
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream >> registrationResult;
+    if(!registrationResult)
+        stream >> denialReason;
+    return true;
+}
+
+ChannelListMessage::ChannelListMessage()
+{
+    messageType = cmtChannelListMessage;
+}
+
+ChannelListMessage::ChannelListMessage(QDataStream &stream)
+{
+    messageType = cmtChannelListMessage;
+    unpack(stream);
+}
+
+bool ChannelListMessage::pack(QDataStream &stream) const
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream << quint8(listType) << channelList;
+    return true;
+}
+
+bool ChannelListMessage::unpack(QDataStream &stream)
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    quint8 tempType;
+    stream >> tempType >> channelList;
+    listType = (ChannelListMessage::ListType) tempType;
+    return true;
+}
+
+ChannelInfoMessage::ChannelInfoMessage()
+{
+    messageType = cmtChannelInfo;
+}
+
+ChannelInfoMessage::ChannelInfoMessage(QDataStream &stream)
+{
+    messageType = cmtChannelInfo;
+    unpack(stream);
+}
+
+bool ChannelInfoMessage::pack(QDataStream &stream) const
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream << channelName << channelDescription << channelTopic;
+    stream << channelMembers;
+    return true;
+}
+
+bool ChannelInfoMessage::unpack(QDataStream &stream)
+{
+    if (stream.status() != QDataStream::Ok)
+        return false;
+    stream >> channelName >> channelDescription >> channelTopic;
+    stream >> channelMembers;
     return true;
 }

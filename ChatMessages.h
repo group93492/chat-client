@@ -2,6 +2,8 @@
 #define CHATMESSAGES_H
 
 #include <QDataStream>
+#include <QString>
+#include <QStringList>
 
 enum ChatMessageType
 {
@@ -9,7 +11,13 @@ enum ChatMessageType
     cmtChannelMessage,
     cmtAuthorizationRequest,
     cmtAuthorizationAnswer,
-    cmtDisconnectMessage
+    cmtDisconnectMessage,
+    cmtRegistrationRequest,
+    cmtRegistrationAnswer,
+    cmtChannelListMessage,
+    cmtChannelInfo/*,
+    cmtChannelJoinRequest,
+    cmtChannelJoinResult*/
     /*etc*/
 };
 
@@ -75,6 +83,58 @@ public:
     DisconnectMessage();
     DisconnectMessage(QDataStream &stream);
     QString sender;
+    bool pack(QDataStream &stream) const;
+    bool unpack(QDataStream &stream);
+};
+
+class RegistrationRequest: public ChatMessageBody
+{
+public:
+    RegistrationRequest();
+    RegistrationRequest(QDataStream &stream);
+    QString username;
+    QString password;
+    bool pack(QDataStream &stream) const;
+    bool unpack(QDataStream &stream);
+};
+
+class RegistrationAnswer: public ChatMessageBody
+{
+public:
+    RegistrationAnswer();
+    RegistrationAnswer(QDataStream &stream);
+    bool registrationResult;
+    QString denialReason;
+    bool pack(QDataStream &stream) const;
+    bool unpack(QDataStream &stream);
+};
+
+class ChannelListMessage: public ChatMessageBody
+{
+public:
+    enum ListType
+    {
+        listOfJoined,
+        listOfAll
+    };
+    ChannelListMessage();
+    ChannelListMessage(QDataStream &stream);
+    ListType listType;
+    QStringList channelList;
+    bool pack(QDataStream &stream) const;
+    bool unpack(QDataStream &stream);
+};
+
+//maybe server should send information about every channel in the channel list, not in the other message?
+class ChannelInfoMessage: public ChatMessageBody
+{
+public:
+    ChannelInfoMessage();
+    ChannelInfoMessage(QDataStream &stream);
+    QString channelName;
+    QString channelDescription;
+    QString channelTopic;
+    QStringList channelMembers;
     bool pack(QDataStream &stream) const;
     bool unpack(QDataStream &stream);
 };

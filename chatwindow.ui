@@ -39,13 +39,13 @@
         <property name="geometry">
          <rect>
           <x>350</x>
-          <y>40</y>
+          <y>30</y>
           <width>111</width>
           <height>31</height>
          </rect>
         </property>
         <property name="text">
-         <string>Connect</string>
+         <string>Authorize</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="hostEdit">
@@ -164,6 +164,19 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
+       <widget class="QPushButton" name="registerButton">
+        <property name="geometry">
+         <rect>
+          <x>350</x>
+          <y>70</y>
+          <width>111</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Register</string>
+        </property>
+       </widget>
       </widget>
      </item>
      <item>
@@ -203,6 +216,16 @@
      <string>Disconnect</string>
     </property>
    </widget>
+   <widget class="QComboBox" name="channelsComboBox">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>440</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -210,7 +233,7 @@
      <x>0</x>
      <y>0</y>
      <width>482</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
