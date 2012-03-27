@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
     ChatAuthWindow authwindow;
 
     authwindow.exec();
-    //Ok and Cancell buttons are temporary
     mainwindow.show();
 
     return a.exec();
