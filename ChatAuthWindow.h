@@ -3,8 +3,7 @@
 
 #include <QDialog>
 
-namespace Ui
-{
+namespace Ui {
     class ChatAuthWindow;
 }
 
@@ -18,13 +17,6 @@ public:
 
 private:
     Ui::ChatAuthWindow *ui;
-
-signals:
-
-
-private slots:
-
-
 };
 
 #endif // CHATAUTHWINDOW_H

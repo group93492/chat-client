@@ -10,25 +10,24 @@ class ChatWindow;
 class ChatWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
 public:
     explicit ChatWindow(QWidget *parent = 0);
     ~ChatWindow();
-    
+
 private:
     Ui::ChatWindow *ui;
-    ChatClient *client;
+    ChatClient *m_client;
 
 signals:
-    void sendMessage(QString &, QString &);
+    void sendMessage(const QString &, const QString &);
 
 private slots:
     void connectToServer();
-    void clientError(QString &);
-    void displayMessage(QString &);
+    void clientError(const QString &);
+    void displayMessage(const QString &);
     void clientAuthorized();
     void postMessage();
-    void on_connectPropsGB_clicked();
 };
 
 #endif // CHATWINDOW_H

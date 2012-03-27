@@ -14,12 +14,12 @@ SOURCES +=  main.cpp\
             chatwindow.cpp \
             ChatClient.cpp \
             ChatMessages.cpp \
-            ChatAuthWindow.cpp
+    ChatAuthWindow.cpp
 
 HEADERS  += chatwindow.h \
             ChatClient.h \
             ChatMessages.h \
-            ChatAuthWindow.h
+    ChatAuthWindow.h
 
 FORMS    += chatwindow.ui \
-            ChatAuthWindow.ui
+    ChatAuthWindow.ui

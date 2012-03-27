@@ -1,28 +1,19 @@
 #include "ChatMessages.h"
 
-ChatMessageBody::ChatMessageBody()
-{
-}
-
-bool ChatMessageBody::pack(QDataStream &stream)
-{
-}
-
-bool ChatMessageBody::unpack(QDataStream &stream)
-{
-}
-
-ChatMessageHeader::ChatMessageHeader()
-{
-}
-
-ChatMessageHeader::ChatMessageHeader(ChatMessageBody *msgBody)
+ChatMessageHeader::ChatMessageHeader(const ChatMessageBody *msgBody)
 {
     messageType = msgBody->messageType;
     messageSize = sizeof(*msgBody);
 }
 
-bool ChatMessageHeader::pack(QDataStream &stream)
+ChatMessageHeader::ChatMessageHeader(QDataStream &stream)
+{
+    unpack(stream);
+    //bad news that we will fault if stream.status is not ok because
+    //we hadn't any chance to notice about it through constructor
+}
+
+bool ChatMessageHeader::pack(QDataStream &stream) const
 {
     if (stream.status() != QDataStream::Ok)
         return false;
@@ -43,7 +34,15 @@ AuthorizationAnswer::AuthorizationAnswer()
     messageType = cmtAuthorizationAnswer;
 }
 
-bool AuthorizationAnswer::pack(QDataStream &stream)
+AuthorizationAnswer::AuthorizationAnswer(QDataStream &stream)
+{
+    messageType = cmtAuthorizationAnswer;
+    unpack(stream);
+    //bad news that we will fault if stream.status is not ok because
+    //we hadn't any chance to notice about it through constructor
+}
+
+bool AuthorizationAnswer::pack(QDataStream &stream) const
 {
     if (stream.status() != QDataStream::Ok)
         return false;
@@ -69,7 +68,15 @@ AuthorizationRequest::AuthorizationRequest()
     messageType = cmtAuthorizationRequest;
 }
 
-bool AuthorizationRequest::pack(QDataStream &stream)
+AuthorizationRequest::AuthorizationRequest(QDataStream &stream)
+{
+    messageType = cmtAuthorizationRequest;
+    unpack(stream);
+    //bad news that we will fault if stream.status is not ok because
+    //we hadn't any chance to notice about it through constructor
+}
+
+bool AuthorizationRequest::pack(QDataStream &stream) const
 {
     if (stream.status() != QDataStream::Ok)
         return false;
@@ -90,7 +97,15 @@ ChannelMessage::ChannelMessage()
     messageType = cmtChannelMessage;
 }
 
-bool ChannelMessage::pack(QDataStream &stream)
+ChannelMessage::ChannelMessage(QDataStream &stream)
+{
+    messageType = cmtChannelMessage;
+    unpack(stream);
+    //bad news that we will fault if stream.status is not ok because
+    //we hadn't any chance to notice about it through constructor
+}
+
+bool ChannelMessage::pack(QDataStream &stream) const
 {
     if (stream.status() != QDataStream::Ok)
         return false;

@@ -10,12 +10,12 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     connect(ui->postButton, SIGNAL(clicked()), this, SLOT(postMessage()));
     connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
-    client = new ChatClient(this);
+    m_client = new ChatClient(this);
     //connect part
-    connect(client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
-    connect(client, SIGNAL(errorOccured(QString&)), this, SLOT(clientError(QString&)));
-    connect(client, SIGNAL(messageToDisplay(QString&)), this, SLOT(displayMessage(QString&)));
-    connect(this, SIGNAL(sendMessage(QString&,QString&)), client, SLOT(sendChannelMessage(QString&,QString&)));
+    connect(m_client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
+    connect(m_client, SIGNAL(errorOccured(const QString&)), this, SLOT(clientError(const QString&)));
+    connect(m_client, SIGNAL(messageToDisplay(const QString&)), this, SLOT(displayMessage(const QString&)));
+    connect(this, SIGNAL(sendMessage(const QString&, const QString&)), m_client, SLOT(sendChannelMessage(const QString&, const QString&)));
 }
 
 ChatWindow::~ChatWindow()
@@ -29,17 +29,17 @@ void ChatWindow::connectToServer()
     quint16 port = ui->portEdit->text().toUInt();
     QString username = ui->usernameEdit->text();
     QString password = ui->passwordEdit->text();
-    client->setUserInfo(username, password);
-    client->start(host, port);
+    m_client->setUserInfo(username, password);
+    m_client->start(host, port);
 }
 
-void ChatWindow::clientError(QString &errorText)
+void ChatWindow::clientError(const QString &errorText)
 {
     QString errmsg = "Error: " + errorText;
     ui->ChatBrowser->append(errmsg);
 }
 
-void ChatWindow::displayMessage(QString &msgText)
+void ChatWindow::displayMessage(const QString &msgText)
 {
     ui->ChatBrowser->append(msgText);
 }
@@ -57,9 +57,4 @@ void ChatWindow::postMessage()
     QString body = ui->messageEdit->text();
     emit sendMessage(receiver, body);
     ui->messageEdit->clear();
-}
-
-void ChatWindow::on_connectPropsGB_clicked()
-{
-
 }
