@@ -17,6 +17,16 @@ public:
 
 private:
     Ui::ChatAuthWindow *ui;
+
+signals:
+
+
+private slots:
+
+
+public slots:
+
+
 };
 
 #endif // CHATAUTHWINDOW_H
