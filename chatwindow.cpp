@@ -3,13 +3,16 @@
 
 ChatWindow::ChatWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::ChatWindow)
+    ui(new Ui::ChatWindow),
+    m_client(NULL),
+    m_regBot(NULL)
 {
     ui->setupUi(this);
     ui->messageEdit->setEnabled(false);
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     connect(ui->postButton, SIGNAL(clicked()), this, SLOT(postMessage()));
     connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
+    connect(ui->registerButton, SIGNAL(clicked()), this, SLOT(requestRegistration()));
     m_client = new ChatClient(this);
     //connect part
     connect(m_client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
@@ -48,7 +51,7 @@ void ChatWindow::displayMessage(const QString &msgText)
 
 void ChatWindow::channelListUpdate(QStringList &channels)
 {
-    QString text = (channels.isEmpty()) ? "You didnt join any channels" : "You've joined channels: ";
+    QString text = (channels.isEmpty()) ? "You didnt join any channels" : "List of your channels: ";
     ui->channelsComboBox->clear();
     for (int i = 0; i < channels.count(); ++i)
     {
@@ -83,8 +86,42 @@ void ChatWindow::on_disconnectButton_clicked()
     ui->ChatBrowser->append("Disconnect from server");
 }
 
-
-void ChatWindow::on_registerButton_clicked()
+void ChatWindow::requestRegistration()
 {
+    if (m_regBot)
+    {
+        delete m_regBot;
+        m_regBot = NULL;
+    }
+    QString host = ui->hostEdit->text();
+    quint32 port = ui->portEdit->text().toUInt();
+    QString username = ui->usernameEdit->text();
+    QString password = ui->passwordEdit->text();
+    m_regBot = new RegisterBot(host, port, username, password);
+    connect(m_regBot, SIGNAL(registrationCompleted(bool,QString&)), this, SLOT(registrationCompleted(bool,QString&)));
+    connect(m_regBot, SIGNAL(errorOccured(QString&)), this, SLOT(registrationError(QString&)));
+    ui->registerButton->setEnabled(false);
+}
 
+void ChatWindow::registrationCompleted(bool regResult, QString &denialReason)
+{
+    if (regResult)
+    {
+        ui->usernameEdit->clear();
+        ui->passwordEdit->clear();
+        QString msg = "Registration was successfully completed.";
+        displayMessage(msg);
+    }
+    else
+        displayMessage(denialReason);
+    ui->registerButton->setEnabled(true);
+    m_regBot->closeConnection();
+}
+
+void ChatWindow::registrationError(QString &errorMsg)
+{
+    ui->registerButton->setEnabled(true);
+    QString msg = "Error during registration: " + errorMsg;
+    displayMessage(msg);
+    m_regBot->closeConnection();
 }

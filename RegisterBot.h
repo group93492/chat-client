@@ -15,13 +15,13 @@ private:
     quint32 m_port;
     QString m_username;
     QString m_password;
-    bool startBot();
     void sendMessageToServer(ChatMessageBody *msgBody) const;
     void processMessage(RegistrationAnswer *msg);
 public:
     explicit RegisterBot(QObject *parent = 0);
     RegisterBot(QString &host, quint32 port, QString &username, QString &password);
     ~RegisterBot();
+    void closeConnection();
 signals:
     void errorOccured(QString &errorMsg);
     void registrationCompleted(bool registrationResult, QString &denialReason);

@@ -26,6 +26,7 @@ public:
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(const QString &un, const QString &pass);
     bool start(const QString &host, const quint16 &port);
+    void stop();
 
 signals:
     void errorOccured(const QString &);

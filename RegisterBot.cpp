@@ -6,28 +6,30 @@ RegisterBot::RegisterBot(QObject *parent) :
 }
 
 RegisterBot::RegisterBot(QString &host, quint32 port, QString &username, QString &password):
+    m_socket(NULL),
     m_nextBlockSize(0),
     m_host(host),
     m_port(port),
     m_username(username),
     m_password(password)
 {
-    startBot();
-}
-
-RegisterBot::~RegisterBot()
-{
-    if (m_socket->state() == QAbstractSocket::ConnectedState)
-        m_socket->disconnectFromHost();
-}
-
-bool RegisterBot::startBot()
-{
     m_socket = new QTcpSocket(this);
     connect(m_socket, SIGNAL(connected()), SLOT(botConnected()));
     connect(m_socket, SIGNAL(readyRead()), SLOT(botGotMessage()));
     connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
     m_socket->connectToHost(m_host, m_port);
+}
+
+RegisterBot::~RegisterBot()
+{
+    qDebug() << "deleting register bot";
+    closeConnection();
+}
+
+void RegisterBot::closeConnection()
+{
+    if (m_socket->state() == QAbstractSocket::ConnectedState)
+        m_socket->disconnectFromHost();
 }
 
 void RegisterBot::botConnected()
@@ -41,17 +43,20 @@ void RegisterBot::botConnected()
 
 void RegisterBot::botGotMessage()
 {
-    QDataStream input(m_socket);
+    QTcpSocket *socket = (QTcpSocket*)sender();
+    if (socket == NULL)
+        return;
+    QDataStream input(socket);
     input.setVersion(QDataStream::Qt_4_7);
     while (true)
     {
         if(!m_nextBlockSize)
         {
-            if(m_socket->bytesAvailable() < sizeof(quint16))
+            if(socket->bytesAvailable() < sizeof(quint16))
                 break;
             input >> m_nextBlockSize;
         }
-        if(m_socket->bytesAvailable() < m_nextBlockSize)
+        if(socket->bytesAvailable() < m_nextBlockSize)
             break;
         //message in in <input>, unpack it
         ChatMessageHeader *header = new ChatMessageHeader(input);

@@ -13,10 +13,12 @@ TEMPLATE = app
 SOURCES +=  main.cpp\
             chatwindow.cpp \
             ChatClient.cpp \
-            ChatMessages.cpp
+            ChatMessages.cpp \
+    RegisterBot.cpp
 
 HEADERS  += chatwindow.h \
             ChatClient.h \
-            ChatMessages.h
+            ChatMessages.h \
+    RegisterBot.h
 
 FORMS    += chatwindow.ui
