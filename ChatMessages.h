@@ -15,22 +15,20 @@ enum ChatMessageType
 class ChatMessageBody
 {
 public:
-    ChatMessageBody() {}
-    virtual ~ChatMessageBody() {}
+    ChatMessageBody();
     quint8 messageType;
-    virtual bool pack(QDataStream &stream) const = 0;
-    virtual bool unpack(QDataStream &stream) = 0;
+    virtual bool pack(QDataStream &stream);
+    virtual bool unpack(QDataStream &stream);
 };
 
 class ChatMessageHeader
 {
 public:
-    ChatMessageHeader() {}
-    ChatMessageHeader(const ChatMessageBody *msgBody);
-    ChatMessageHeader(QDataStream &stream);
+    ChatMessageHeader();
+    ChatMessageHeader(ChatMessageBody *msgBody);
     quint8 messageType;
     quint32 messageSize;
-    bool pack(QDataStream &stream) const;
+    bool pack(QDataStream &stream);
     bool unpack(QDataStream &stream);
 };
 
@@ -38,34 +36,31 @@ class AuthorizationAnswer : public ChatMessageBody
 {
 public:
     AuthorizationAnswer();
-    AuthorizationAnswer(QDataStream &stream);
     bool authorizationResult;
     QString denialReason;
-    bool pack(QDataStream &stream) const;
-    bool unpack(QDataStream &stream);
+    virtual bool pack(QDataStream &stream);
+    virtual bool unpack(QDataStream &stream);
 };
 
 class AuthorizationRequest: public ChatMessageBody
 {
 public:
     AuthorizationRequest();
-    AuthorizationRequest(QDataStream &stream);
     QString username;
     QString password;
-    bool pack(QDataStream &stream) const;
-    bool unpack(QDataStream &stream);
+    virtual bool pack(QDataStream &stream);
+    virtual bool unpack(QDataStream &stream);
 };
 
 class ChannelMessage : public ChatMessageBody
 {
 public:
     ChannelMessage();
-    ChannelMessage(QDataStream &stream);
     QString sender;
     QString receiver;
     QString messageText;
-    bool pack(QDataStream &stream) const;
-    bool unpack(QDataStream &stream);
+    virtual bool pack(QDataStream &stream);
+    virtual bool unpack(QDataStream &stream);
 };
 
 #endif // CHATMESSAGES_H

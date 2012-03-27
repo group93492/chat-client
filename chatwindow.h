@@ -17,17 +17,18 @@ public:
     
 private:
     Ui::ChatWindow *ui;
-    ChatClient *m_client;
+    ChatClient *client;
 
 signals:
-    void sendMessage(const QString &, const QString &);
+    void sendMessage(QString &, QString &);
 
 private slots:
     void connectToServer();
-    void clientError(const QString &);
-    void displayMessage(const QString &);
+    void clientError(QString &);
+    void displayMessage(QString &);
     void clientAuthorized();
     void postMessage();
+    void on_connectPropsGB_clicked();
 };
 
 #endif // CHATWINDOW_H

@@ -9,34 +9,29 @@ class ChatClient : public QObject
 {
     Q_OBJECT
 private:
-    QTcpSocket *m_tcpSocket;
-    quint16 m_nextBlockSize;
-    QString m_username;
-    QString m_password;   //password stored in string, kekeke
-    bool m_userdataAssigned;
-    bool m_authorized;
-    void sendMessageToServer(ChatMessageBody *msgBody) const;
-    void processMessage(const ChannelMessage *msg);
-    void processMessage(const AuthorizationAnswer *msg);
-
+    QTcpSocket *tcpSocket;
+    quint16 nextBlockSize;
+    QString username;
+    QString password;   //password stored in string, kekeke
+    bool userdataAssigned;
+    bool authorized;
+    void sendMessageToServer(ChatMessageBody *msgBody);
+    void processMessage(ChannelMessage *msg);
+    void processMessage(AuthorizationAnswer *msg);
 public:
     explicit ChatClient(QObject *parent = 0);
-    void setUserInfo(const QString &un, const QString &pass);
-    bool start(const QString &host, const quint16 &port);
-
+    void setUserInfo(QString &un, QString &pass);
+    bool start(QString &host, quint16 port);
 signals:
-    void errorOccured(const QString &);
-    void messageToDisplay(const QString &);
+    void errorOccured(QString &);
+    void messageToDisplay(QString &);
     void clientAuthorized();
-
 private slots:
-    void clientConnected() const;
+    void clientConnected();
     void clientGotNewMessage();
-    void socketError(const QAbstractSocket::SocketError &error);
-
+    void socketError(QAbstractSocket::SocketError error);
 public slots:
-    void sendChannelMessage(const QString &rcvr, const QString &body) const;
-
+    void sendChannelMessage(QString& rcvr, QString &body);
 };
 
 #endif // CHATCLIENT_H
