@@ -56,7 +56,7 @@ void ChatWindow::channelListUpdate(QStringList &channels)
     for (int i = 0; i < channels.count(); ++i)
     {
         ui->channelsComboBox->addItem(channels[i]);
-        text += channels[i];
+        text += (channels[i] + ", ");
     }
     text += ".";
     displayMessage(text);
@@ -74,6 +74,8 @@ void ChatWindow::postMessage()
 {
     QString receiver = ui->channelsComboBox->itemText(ui->channelsComboBox->currentIndex());
     QString body = ui->messageEdit->text();
+    if (receiver.isEmpty())
+        receiver = "main";
     emit sendMessage(receiver, body);
     ui->messageEdit->clear();
 }

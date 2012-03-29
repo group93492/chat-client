@@ -52,7 +52,7 @@ void ChatClient::clientGotNewMessage()
     input.setVersion(QDataStream::Qt_4_7);
     while (true)
     {
-        if(!m_nextBlockSize)
+        if(m_nextBlockSize == 0)
         {
             if(socket->bytesAvailable() < sizeof(quint16))
                 break;
@@ -97,11 +97,12 @@ void ChatClient::clientGotNewMessage()
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
-                return;
+                /*m_nextBlockSize = 0;
+                return;*/
             }
         }
+        m_nextBlockSize = 0;
     }
-    m_nextBlockSize = 0;
 }
 
 
@@ -135,7 +136,7 @@ void ChatClient::sendDisconnectMessage() const
     msg->sender = m_username;
     sendMessageToServer(msg);
     m_tcpSocket->close();
-    QString message = "Disconnect from server";
+//    QString message = "Disconnect from server";
     delete msg;
 }
 
@@ -150,6 +151,7 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
     header->pack(output);
     msgBody->pack(output);
     delete header;
+    output.device()->seek(0);
     output << quint16(arrBlock.size() - sizeof(quint16));
     m_tcpSocket->write(arrBlock);
 }
@@ -157,7 +159,8 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 void ChatClient::processMessage(const ChannelMessage *msg)
 {
     qDebug() << "Processing channel message:" << msg->sender << msg->receiver << msg->messageText;
-    QString message = QString("%1: %2")
+    QString message = QString("%1:: %2 - %3")
+                        .arg(msg->receiver)
                         .arg(msg->sender)
                         .arg(msg->messageText);
     emit messageToDisplay(message);
