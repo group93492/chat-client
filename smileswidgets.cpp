@@ -1,29 +1,85 @@
 #include "smileswidgets.h"
+#include <QDebug>
 
 chatTextBrowser::chatTextBrowser(QWidget *parent, QMap<QString, QString> *smilesMap) :
     QTextBrowser(parent)
 {
     m_smilesMap = smilesMap;
+    m_color = "navy";
+    m_timePattern = "[hh:mm:ss]";
+    m_ownerColor = "red";
+}
+
+void chatTextBrowser::setOwnerNick(QString nick)
+{
+    m_ownerNick = nick;
+}
+
+void chatTextBrowser::appendMessage(QString nick, QString msg)
+{
+    //:smile_name:
+        if(m_smilesMap)
+        {
+            QString smileString;
+            for(quint16 index = 0; index < msg.size(); index++)
+            {
+                if(msg[index] == QChar(':'))
+                {
+                    smileString = isSmile(index, msg);
+                    if(!(smileString).isNull() && m_smilesMap->contains(smileString))
+                        msg.replace(index, smileString.length() + 2, m_smilesMap->value(smileString));
+                }
+            }
+        }
+        if(msg.contains(m_ownerNick))
+            msg.replace(m_ownerNick, QString("<FONT color=\"%1\">%2</FONT>").arg(m_ownerColor).arg(m_ownerNick));
+        msg = QString("<FONT color=\"%1\">%2%3</FONT>: %4")
+                .arg(m_color)
+                .arg(QTime::currentTime().toString(m_timePattern))
+                .arg(nick)
+                .arg(msg);
+        append(msg);
 }
 
 void chatTextBrowser::appendMessage(QString msg)
 {
     //:smile_name:
-    if(m_smilesMap)
-    {
-        QString smileString;
-        for(quint16 index = 0; index < msg.size(); index++)
+        if(m_smilesMap)
         {
-            if(msg[index] == QChar(':'))
+            QString smileString;
+            for(quint16 index = 0; index < msg.size(); index++)
             {
-                smileString = isSmile(index, msg);
-                if(!(smileString).isNull() && m_smilesMap->contains(smileString))
-                    msg.replace(index, smileString.length() + 2, m_smilesMap->value(smileString));
+                if(msg[index] == QChar(':'))
+                {
+                    smileString = isSmile(index, msg);
+                    if(!(smileString).isNull() && m_smilesMap->contains(smileString))
+                        msg.replace(index, smileString.length() + 2, m_smilesMap->value(smileString));
+                }
             }
         }
-    }
-    append(msg);
+        if(msg.contains(m_ownerNick))
+            msg.replace(m_ownerNick, QString("<FONT color=\"%1\">%2</FONT>").arg(m_ownerColor).arg(m_ownerNick));
+        msg = QString("<FONT color=\"%2\">%1%3</FONT>: %4")
+                .arg(QTime::currentTime().toString(m_timePattern))
+                .arg(m_color)
+                .arg(m_ownerNick)
+                .arg(msg);
+        append(msg);
+}
 
+void chatTextBrowser::setNickColor(QString color)
+{
+    m_color = color;
+}
+
+void chatTextBrowser::setTimePattern(QString pattern)
+{
+    m_timePattern = pattern;
+}
+
+void chatTextBrowser::setOwnerColor(QString color)
+{
+    m_ownerColor = color;
 }
 
 QString chatTextBrowser::isSmile(quint16 index, QString msg)
@@ -38,6 +94,43 @@ QString chatTextBrowser::isSmile(quint16 index, QString msg)
         index++;
     }
     return smileString;
+}
+
+void chatTextBrowser::mousePressEvent(QMouseEvent *ev)
+{
+
+    if(ev->button() == Qt::LeftButton)
+    {
+        quint8 size = m_timePattern.size();
+        QString str;
+        QTextCursor cursor = cursorForPosition(QPoint(ev->x(), ev->y()));
+        str = cursor.block().text();
+        str.remove(0, size);
+        quint8 pos = cursor.positionInBlock();
+        if(pos >= size && pos <= size + str.indexOf(':'))
+            emit onNickClicked(str.mid(0, str.indexOf(':')));
+    }
+    QTextBrowser::mousePressEvent(ev);
+}
+
+void chatTextBrowser::mouseMoveEvent(QMouseEvent *ev)
+{
+    if(ev->button() == Qt::NoButton)
+    {
+        quint8 size = m_timePattern.size();
+        QTextCursor cursor = cursorForPosition(QPoint(ev->x(), ev->y()));
+        quint8 pos = cursor.positionInBlock();
+        if(pos >= size && pos <= size + cursor.block().text().remove(0, size).indexOf(':'))
+        {
+            if(QApplication::overrideCursor() == 0 || QApplication::overrideCursor()->shape() != Qt::PointingHandCursor)
+                QApplication::setOverrideCursor(QCursor(Qt::PointingHandCursor));
+        }
+        else
+        {
+            QApplication::restoreOverrideCursor();
+        }
+    }
+    QTextBrowser::mouseMoveEvent(ev);
 }
 
 smileImage::smileImage(QString filename)
@@ -115,8 +208,7 @@ smilesWidget::smilesWidget(QWidget *parent) :
 
 smilesWidget::~smilesWidget()
 {
-    delete m_smilesMap;
-    delete m_layout;
+
 }
 
 QMap<QString, QString> *smilesWidget::getSmiles()
