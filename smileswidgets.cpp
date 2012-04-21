@@ -29,12 +29,14 @@ void chatTextBrowser::sendLastMessage()
 void chatTextBrowser::appendMessage(QString nick, QString msg)
 {
     //:smile_name:
-    if(msg.mid(0,3) == "[p]")
+    if(msg[0] == '*')
     {
-        msg.remove(0, 3);
+        msg.remove(0, 1);
         editLastMessage(nick, msg);
         return;
     }
+    if(nick == m_ownerNick)
+        m_lastMessage = "*" + msg;
     if(m_smilesMap)
     {
         QString smileString;
@@ -61,13 +63,13 @@ void chatTextBrowser::appendMessage(QString nick, QString msg)
 void chatTextBrowser::appendMessage(QString msg)
 {
     //:smile_name:
-    if(msg.mid(0, 3) == "[p]")
+    if(msg[0] == '*')
     {
-        msg.remove(0, 3);
+        msg.remove(0, 1);
         editLastMessage(m_ownerNick, msg);
         return;
     }
-    m_lastMessage = "[p]" + msg;
+    m_lastMessage = "*" + msg;
     if(m_smilesMap)
     {
         QString smileString;
@@ -120,7 +122,7 @@ void chatTextBrowser::editLastMessage(QString nick, QString newmsg)
     QString time;
     QTextCursor cursor = textCursor();
     if(nick == m_ownerNick)
-        m_lastMessage = "[p]" + newmsg;
+        m_lastMessage = "*" + newmsg;
     if(m_smilesMap)
     {
         QString smileString;
@@ -138,8 +140,8 @@ void chatTextBrowser::editLastMessage(QString nick, QString newmsg)
     do
     {
         str = cursor.block().text();
-        if(str[1] == 'p')
-            str.remove(0,3);
+        if(str[0] == '*')
+            str.remove(0,1);
         time = str.left(m_timePattern.length());
         str.remove(0, m_timePattern.length());
         if(str.mid(0, str.indexOf(':')) == nick)
@@ -147,7 +149,7 @@ void chatTextBrowser::editLastMessage(QString nick, QString newmsg)
             cursor.select(QTextCursor::BlockUnderCursor);
             cursor.removeSelectedText();
             cursor.insertBlock();
-            cursor.insertHtml(QString("<FONT color=\"gray\">[p]</FONT><FONT color=\"%1\">%2%3</FONT>:%4")
+            cursor.insertHtml(QString("<FONT color=\"gray\">*</FONT><FONT color=\"%1\">%2%3</FONT>:%4")
                               .arg(m_color)
                               .arg(time)
                               .arg(nick)
