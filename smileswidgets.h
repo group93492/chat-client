@@ -13,6 +13,7 @@
 #include <QDir>
 #include <QTime>
 #include <QTextBlock>
+#include <QMenu>
 #include <math.h>
 
 class chatTextBrowser : public QTextBrowser
@@ -21,6 +22,7 @@ class chatTextBrowser : public QTextBrowser
 public:
     explicit chatTextBrowser(QWidget *parent = 0, QMap<QString, QString> *smilesMap = NULL);
     void setOwnerNick(QString nick);
+    QString getOwnerNick();
 private:
     QMap<QString, QString> *m_smilesMap;
     QString isSmile(quint16 index, QString msg);
@@ -28,17 +30,23 @@ private:
     QString m_ownerColor;
     QString m_timePattern;
     QString m_ownerNick;
+    QString m_lastMessage;
 protected:
     virtual void mousePressEvent(QMouseEvent *ev);
     virtual void mouseMoveEvent(QMouseEvent *ev);
+    virtual void contextMenuEvent(QContextMenuEvent *e);
 public slots:
     void appendMessage(QString nick, QString msg);
     void appendMessage(QString msg);
+    void appendSystemMessage(QString msg);
     void setNickColor(QString color);
     void setTimePattern(QString pattern);
-    void setOwnerColor(QString color);
+    void setOwnerNickColor(QString color);
+    void editLastMessage(QString nick, QString newmsg);
+    void sendLastMessage();
 signals:
     void onNickClicked(QString nick);
+    void lastMessage(QString message);
 };
 
 class smilesWidget : public QDialog
