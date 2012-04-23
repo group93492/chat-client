@@ -140,6 +140,14 @@ void ChatClient::sendDisconnectMessage() const
     delete msg;
 }
 
+void ChatClient::allChannelsRequest()
+{
+    ChannelListRequest *list = new ChannelListRequest();
+    list->listType = ChannelListRequest::listOfAll;
+    list->nick = m_username;
+    sendMessageToServer(list);
+}
+
 void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 {
     QByteArray arrBlock;
@@ -195,7 +203,7 @@ void ChatClient::processMessage(const DisconnectMessage *msg)
 
 void ChatClient::processMessage(const ChannelListMessage *msg)
 {
-    channelList = msg->channelList;
+    channelList = msg->channelList.keys();
     emit displayChannelList(channelList);
 }
 

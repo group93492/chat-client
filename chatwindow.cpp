@@ -21,6 +21,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(m_client, SIGNAL(displayChannelList(QStringList&)), this, SLOT(channelListUpdate(QStringList&)));
     connect(this, SIGNAL(sendMessage(const QString&, const QString&)), m_client, SLOT(sendChannelMessage(const QString&, const QString&)));
     connect(ui->disconnectButton, SIGNAL(clicked()), m_client, SLOT(sendDisconnectMessage()));
+    connect(ui->pushButton, SIGNAL(clicked()), m_client, SLOT(allChannelsRequest()));
 }
 
 ChatWindow::~ChatWindow()

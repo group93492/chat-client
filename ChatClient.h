@@ -42,6 +42,7 @@ private slots:
 public slots:
     void sendChannelMessage(const QString &rcvr, const QString &body) const;
     void sendDisconnectMessage() const;
+    void allChannelsRequest();
 
 };
 

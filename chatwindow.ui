@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>482</width>
-    <height>531</height>
+    <height>563</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -226,6 +226,19 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>470</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Список всех каналов</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -233,7 +246,7 @@
      <x>0</x>
      <y>0</y>
      <width>482</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
