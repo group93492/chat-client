@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "ChatClient.h"
+
 namespace Ui {
 class ChatWindow;
 }
@@ -28,6 +29,9 @@ private slots:
     void displayMessage(const QString &);
     void clientAuthorized();
     void postMessage();
+    void on_pushButton_clicked();
+    void on_tabWidget_tabCloseRequested(int index);
+    void on_pushButton_2_clicked();
 };
 
 #endif // CHATWINDOW_H

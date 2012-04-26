@@ -1,5 +1,6 @@
 #include "ChatAuthWindow.h"
 #include "ui_ChatAuthWindow.h"
+#include "ConnectionProperties.h"
 
 ChatAuthWindow::ChatAuthWindow(QWidget *parent) :
     QDialog(parent),
@@ -11,4 +12,10 @@ ChatAuthWindow::ChatAuthWindow(QWidget *parent) :
 ChatAuthWindow::~ChatAuthWindow()
 {
     delete ui;
+}
+
+void ChatAuthWindow::on_pushButton_clicked()
+{
+    ConnectionProperties connection_window;
+    connection_window.exec();
 }

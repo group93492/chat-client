@@ -24,6 +24,8 @@ signals:
 private slots:
 
 
+    void on_pushButton_clicked();
+
 public slots:
 
 
