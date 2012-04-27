@@ -92,6 +92,7 @@ void RegisterBot::sendMessageToServer(ChatMessageBody *msgBody) const
     header->pack(output);
     msgBody->pack(output);
     delete header;
+    output.device()->seek(0);
     output << quint16(arrBlock.size() - sizeof(quint16));
     m_socket->write(arrBlock);
 }
