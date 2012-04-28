@@ -22,6 +22,8 @@ private:
     void processMessage(const DisconnectMessage *msg);
     void processMessage(const RegistrationAnswer *msg);
     void processMessage(const ChannelListMessage *msg);
+    void processMessage(const ChannelJoinResult *msg);
+    void processMessage(const ChannelSystemMessage *msg);
 public:
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(const QString &un, const QString &pass);
@@ -33,6 +35,8 @@ signals:
     void messageToDisplay(const QString &);
     void clientAuthorized();
     void displayChannelList(QStringList &);
+    void channelJoin(QString channelname, bool result);
+    void channelSystemMsg(QString channel, QString msg);
 
 private slots:
     void clientConnected() const;
@@ -43,6 +47,8 @@ public slots:
     void sendChannelMessage(const QString &rcvr, const QString &body) const;
     void sendDisconnectMessage() const;
     void allChannelsRequest();
+    void joinChannelRequest(QString channelname);
+    void leaveChannel(QString channelname);
 
 };
 

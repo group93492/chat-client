@@ -94,11 +94,26 @@ void ChatClient::clientGotNewMessage()
                 delete msg;
                 break;
             }
+        case cmtChannelJoinResult:
+            {
+                ChannelJoinResult *msg = new ChannelJoinResult(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
+        case cmtChannelSystemMessage:
+            {
+                ChannelSystemMessage *msg = new ChannelSystemMessage(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
                 /*m_nextBlockSize = 0;
                 return;*/
+                break;
             }
         }
         m_nextBlockSize = 0;
@@ -146,6 +161,25 @@ void ChatClient::allChannelsRequest()
     list->listType = ChannelListRequest::listOfAll;
     list->nick = m_username;
     sendMessageToServer(list);
+    delete list;
+}
+
+void ChatClient::joinChannelRequest(QString channelname)
+{
+    ChannelJoinRequest *request = new ChannelJoinRequest();
+    request->channelName = channelname;
+    request->nick = m_username;
+    sendMessageToServer(request);
+    delete request;
+}
+
+void ChatClient::leaveChannel(QString channelname)
+{
+    ChannelLeaveMessage *msg = new ChannelLeaveMessage();
+    msg->channelName = channelname;
+    msg->nick = m_username;
+    sendMessageToServer(msg);
+    delete msg;
 }
 
 void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
@@ -205,5 +239,19 @@ void ChatClient::processMessage(const ChannelListMessage *msg)
 {
     channelList = msg->channelList.keys();
     emit displayChannelList(channelList);
+}
+
+void ChatClient::processMessage(const ChannelJoinResult *msg)
+{
+    QString channelname = msg->channelName;
+    bool result = msg->result;
+    emit channelJoin(channelname, result);
+}
+
+void ChatClient::processMessage(const ChannelSystemMessage *msg)
+{
+    QString channelname = msg->channelName;
+    QString text = msg->message;
+    emit channelSystemMsg(channelname, text);
 }
 
