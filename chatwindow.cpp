@@ -128,3 +128,8 @@ void ChatWindow::registrationError(QString &errorMsg)
     displayMessage(msg);
     m_regBot->closeConnection();
 }
+
+void ChatWindow::on_leaveChannelBtn_clicked()
+{
+    m_client->leaveChannel(ui->channelsComboBox->currentText());
+}

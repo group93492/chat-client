@@ -35,6 +35,7 @@ private slots:
     void requestRegistration();
     void registrationCompleted(bool regResult, QString &denialReason);
     void registrationError(QString &errorMsg);
+    void on_leaveChannelBtn_clicked();
 };
 
 #endif // CHATWINDOW_H
