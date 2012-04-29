@@ -15,13 +15,18 @@ SOURCES +=  main.cpp\
             ChatClient.cpp \
             ChatMessages.cpp \
     ChatAuthWindow.cpp \
-    smileswidgets.cpp
+    smileswidgets.cpp \
+    ListOfChannels.cpp \
+    ConnectionProperties.cpp
 
 HEADERS  += chatwindow.h \
             ChatClient.h \
             ChatMessages.h \
     ChatAuthWindow.h \
-    smileswidgets.h
+    smileswidgets.h \
+    ListOfChannels.h \
+    ConnectionProperties.h
 
 FORMS    += chatwindow.ui \
-    ChatAuthWindow.ui
+    ChatAuthWindow.ui \
+    ConnectionProperties.ui
