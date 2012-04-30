@@ -2,6 +2,8 @@
 #define CHATWINDOW_H
 
 #include <QMainWindow>
+#include <QListView>
+#include "smileswidgets.h"
 #include "ChatClient.h"
 #include "RegisterBot.h"
 
@@ -20,6 +22,8 @@ public:
 private:
     Ui::ChatWindow *ui;
     ChatClient *m_client;
+    smilesWidget *m_smiles;
+    QMap<QString, chatTextBrowser*> m_textBrowsersMap;
 
 signals:
     void sendMessage(const QString &, const QString &);
@@ -30,6 +34,11 @@ private slots:
     void clientAuthorized();
     void postMessage();
     void on_pushButton_2_clicked();
+    void addChannel(QString name);
+    void removeChannel(int index);
+    void addChannelMessage(QString channel, QString nick, QString message);
+    void insertText(QString smileName);
+    void lastMessageEdit(QString message);
 public slots:
     void connectToServer(QString username, QString password, QTcpSocket *socket);
 };

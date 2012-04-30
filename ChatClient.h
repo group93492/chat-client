@@ -26,19 +26,19 @@ private:
 public:
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(const QString &un, const QString &pass);
+    QString username();
     bool start(QTcpSocket *socket);
     void stop();
 
 signals:
     void errorOccured(const QString &);
-    void messageToDisplay(const QString &);
+    void channelMsg(QString channel, QString nick, QString msg);
     void clientAuthorized();
     void displayChannelList(QStringList &);
     void channelJoin(QString channelname, bool result);
     void channelSystemMsg(QString channel, QString msg);
 
 private slots:
-    void clientConnected() const;
     void clientGotNewMessage();
     void socketError(const QAbstractSocket::SocketError &error);
 

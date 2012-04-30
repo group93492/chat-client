@@ -16,12 +16,16 @@ void ChatClient::setUserInfo(const QString &un, const QString &pass)
     m_userdataAssigned = !((m_username.isEmpty()) || (m_password.isEmpty()));
 }
 
+QString ChatClient::username()
+{
+    return m_username;
+}
+
 bool ChatClient::start(QTcpSocket *socket)
 {
     if (!m_userdataAssigned)
         return false;
     m_tcpSocket = socket;
-    connect(m_tcpSocket, SIGNAL(connected()), SLOT(clientConnected()));
     connect(m_tcpSocket, SIGNAL(readyRead()), SLOT(clientGotNewMessage()));
     connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
     return true;
@@ -30,17 +34,6 @@ bool ChatClient::start(QTcpSocket *socket)
 void ChatClient::stop()
 {
 
-}
-
-void ChatClient::clientConnected() const
-{
-    //we were connected to server
-    //now we need to authorize
-    AuthorizationRequest *msg = new AuthorizationRequest();
-    msg->username = this->m_username;
-    msg->password = this->m_password;
-    sendMessageToServer(msg);
-    delete msg;
 }
 
 void ChatClient::clientGotNewMessage()
@@ -191,10 +184,7 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 void ChatClient::processMessage(const ChannelMessage *msg)
 {
     qDebug() << "Processing channel message:" << msg->sender << msg->receiver << msg->messageText;
-    QString message = QString("%1: %2")
-                        .arg(msg->sender)
-                        .arg(msg->messageText);
-    emit messageToDisplay(message);
+    emit channelMsg(msg->receiver, msg->sender, msg->messageText);
 }
 
 void ChatClient::processMessage(const DisconnectMessage *msg)
@@ -202,7 +192,7 @@ void ChatClient::processMessage(const DisconnectMessage *msg)
     QString message;
     message = msg->sender + " has left from server";
     qDebug() << "Processing disconnect message from:" << msg->sender;
-    emit messageToDisplay(message);
+    //emit messageToDisplay(message);
 }
 
 void ChatClient::processMessage(const ChannelListMessage *msg)

@@ -139,6 +139,7 @@ void RegisterBot::processMessage(const AuthorizationAnswer *msg)
     qDebug() << "Processing authorization answer:" << msg->authorizationResult;
     if (msg->authorizationResult)
     {
+        m_socket->disconnect();
         emit authorized(m_socket);
     }
     else
