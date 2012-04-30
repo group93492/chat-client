@@ -31,4 +31,5 @@ HEADERS  += chatwindow.h \
 
 FORMS    += chatwindow.ui \
     ChatAuthWindow.ui \
-    ConnectionProperties.ui
+    ConnectionProperties.ui \
+    ListOfChannels.ui
