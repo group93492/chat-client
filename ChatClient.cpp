@@ -28,6 +28,11 @@ bool ChatClient::start(QTcpSocket *socket)
     m_tcpSocket = socket;
     connect(m_tcpSocket, SIGNAL(readyRead()), SLOT(clientGotNewMessage()));
     connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
+    ChannelListRequest *msg = new ChannelListRequest();
+    msg->listType = ChannelListRequest::listOfAll;
+    msg->nick = m_username;
+    sendMessageToServer(msg);
+    delete msg;
     return true;
 }
 
@@ -197,8 +202,7 @@ void ChatClient::processMessage(const DisconnectMessage *msg)
 
 void ChatClient::processMessage(const ChannelListMessage *msg)
 {
-    channelList = msg->channelList.keys();
-    emit displayChannelList(channelList);
+    emit channelList(msg->channelList);
 }
 
 void ChatClient::processMessage(const ChannelJoinResult *msg)

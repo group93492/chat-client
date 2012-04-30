@@ -51,10 +51,10 @@
      <string>Post</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="allChannelsPushButton">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>440</y>
       <width>131</width>
       <height>31</height>

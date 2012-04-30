@@ -2,6 +2,7 @@
 #define LISTOFCHANNELS_H
 
 #include <QDialog>
+#include <QTableWidgetItem>
 
 namespace Ui {
     class ListOfChannels;
@@ -17,6 +18,9 @@ public:
 
 private:
     Ui::ListOfChannels *ui;
+
+public slots:
+    void setChannelsList(QMap<QString, QString> list);
 };
 
 #endif // LISTOFCHANNELS_H

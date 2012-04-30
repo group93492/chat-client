@@ -11,6 +11,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
     m_client = new ChatClient(this);
     m_smiles = new smilesWidget(this);
+    m_channelsList = new ListOfChannels(this);
     //connect part
     connect(ui->smilesPushButton, SIGNAL(clicked()), m_smiles, SLOT(show()));
     connect(m_client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
@@ -19,6 +20,8 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(this, SIGNAL(sendMessage(const QString&, const QString&)), m_client, SLOT(sendChannelMessage(const QString&, const QString&)));
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(removeChannel(int)));
     connect(m_smiles, SIGNAL(smileClicked(QString)), SLOT(insertText(QString)));
+    connect(ui->allChannelsPushButton, SIGNAL(clicked()), m_channelsList, SLOT(show()));
+    connect(m_client, SIGNAL(channelList(QMap<QString,QString>)), m_channelsList, SLOT(setChannelsList(QMap<QString,QString>)));
 }
 
 ChatWindow::~ChatWindow()
@@ -67,12 +70,6 @@ void ChatWindow::postMessage()
         receiver = "main";
     emit sendMessage(receiver, body);
     ui->messageEdit->clear();
-}
-
-void ChatWindow::on_pushButton_2_clicked()
-{
-    ListOfChannels listofchannels;
-    listofchannels.exec();
 }
 
 void ChatWindow::addChannel(QString name)

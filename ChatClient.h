@@ -15,7 +15,6 @@ private:
     QString m_password;   //password stored in string, kekeke
     bool m_userdataAssigned;
     bool m_authorized;
-    QStringList channelList;
     void sendMessageToServer(ChatMessageBody *msgBody) const;
     void processMessage(const ChannelMessage *msg);
     void processMessage(const DisconnectMessage *msg);
@@ -34,7 +33,7 @@ signals:
     void errorOccured(const QString &);
     void channelMsg(QString channel, QString nick, QString msg);
     void clientAuthorized();
-    void displayChannelList(QStringList &);
+    void channelList(QMap<QString, QString> list);
     void channelJoin(QString channelname, bool result);
     void channelSystemMsg(QString channel, QString msg);
 
