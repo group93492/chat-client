@@ -17,7 +17,8 @@ SOURCES +=  main.cpp\
     ChatAuthWindow.cpp \
     smileswidgets.cpp \
     ListOfChannels.cpp \
-    ConnectionProperties.cpp
+    ConnectionProperties.cpp \
+    RegisterBot.cpp
 
 HEADERS  += chatwindow.h \
             ChatClient.h \
@@ -25,7 +26,8 @@ HEADERS  += chatwindow.h \
     ChatAuthWindow.h \
     smileswidgets.h \
     ListOfChannels.h \
-    ConnectionProperties.h
+    ConnectionProperties.h \
+    RegisterBot.h
 
 FORMS    += chatwindow.ui \
     ChatAuthWindow.ui \

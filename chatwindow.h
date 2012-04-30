@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "ChatClient.h"
+#include "RegisterBot.h"
 
 namespace Ui {
 class ChatWindow;
@@ -15,10 +16,11 @@ class ChatWindow : public QMainWindow
 public:
     explicit ChatWindow(QWidget *parent = 0);
     ~ChatWindow();
-
+	
 private:
     Ui::ChatWindow *ui;
     ChatClient *m_client;
+    RegisterBot *m_regBot;
 
 signals:
     void sendMessage(const QString &, const QString &);
@@ -26,11 +28,9 @@ signals:
 private slots:
     void connectToServer();
     void clientError(const QString &);
-    void displayMessage(const QString &);
+    void displayMessage(const QString &msgText);
     void clientAuthorized();
     void postMessage();
-    void on_pushButton_clicked();
-    void on_tabWidget_tabCloseRequested(int index);
     void on_pushButton_2_clicked();
 };
 

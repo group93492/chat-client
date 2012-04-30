@@ -2,11 +2,9 @@
 #include "ui_chatwindow.h"
 #include "ListOfChannels.h"
 
-int count = 0;
-
 ChatWindow::ChatWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::ChatWindow)  
+    ui(new Ui::ChatWindow)
 {
     ui->setupUi(this);
     ui->messageEdit->setEnabled(false);
@@ -56,21 +54,12 @@ void ChatWindow::clientAuthorized()
 
 void ChatWindow::postMessage()
 {
-    QString receiver = "*";
     QString body = ui->messageEdit->text();
+    QString receiver = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
+	if (receiver.isEmpty())
+        receiver = "main";
     emit sendMessage(receiver, body);
     ui->messageEdit->clear();
-}
-
-void ChatWindow::on_pushButton_clicked()
-{
-    ChatWindow::ui->tabWidget->addTab( new QTextEdit, QString(" Channelname "));
-}
-
-
-void ChatWindow::on_tabWidget_tabCloseRequested(int index)
-{
-    if (index>0) ui->tabWidget->removeTab(index);
 }
 
 void ChatWindow::on_pushButton_2_clicked()

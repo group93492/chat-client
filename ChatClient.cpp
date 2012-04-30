@@ -28,6 +28,11 @@ bool ChatClient::start(const QString &host, const quint16 &port)
     return true;
 }
 
+void ChatClient::stop()
+{
+
+}
+
 void ChatClient::clientConnected() const
 {
     //we were connected to server
@@ -75,14 +80,42 @@ void ChatClient::clientGotNewMessage()
                 delete msg;
                 break;
             }
+        case cmtDisconnectMessage:
+            {
+                DisconnectMessage *msg = new DisconnectMessage(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
+        case cmtChannelListMessage:
+            {
+                ChannelListMessage *msg = new ChannelListMessage(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
+        case cmtChannelJoinResult:
+            {
+                ChannelJoinResult *msg = new ChannelJoinResult(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
+        case cmtChannelSystemMessage:
+            {
+                ChannelSystemMessage *msg = new ChannelSystemMessage(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
-                return;
+                break;
             }
         }
+        m_nextBlockSize = 0;
     }
-    m_nextBlockSize = 0;
 }
 
 
@@ -110,6 +143,43 @@ void ChatClient::sendChannelMessage(const QString &rcvr, const QString &body) co
     delete msg;
 }
 
+void ChatClient::sendDisconnectMessage() const
+{
+    DisconnectMessage *msg = new DisconnectMessage();
+    msg->sender = m_username;
+    sendMessageToServer(msg);
+    m_tcpSocket->close();
+//    QString message = "Disconnect from server";
+    delete msg;
+}
+
+void ChatClient::allChannelsRequest()
+{
+    ChannelListRequest *list = new ChannelListRequest();
+    list->listType = ChannelListRequest::listOfAll;
+    list->nick = m_username;
+    sendMessageToServer(list);
+    delete list;
+}
+
+void ChatClient::joinChannelRequest(QString channelname)
+{
+    ChannelJoinRequest *request = new ChannelJoinRequest();
+    request->channelName = channelname;
+    request->nick = m_username;
+    sendMessageToServer(request);
+    delete request;
+}
+
+void ChatClient::leaveChannel(QString channelname)
+{
+    ChannelLeaveMessage *msg = new ChannelLeaveMessage();
+    msg->channelName = channelname;
+    msg->nick = m_username;
+    sendMessageToServer(msg);
+    delete msg;
+}
+
 void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 {
     QByteArray arrBlock;
@@ -121,6 +191,7 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
     header->pack(output);
     msgBody->pack(output);
     delete header;
+    output.device()->seek(0);
     output << quint16(arrBlock.size() - sizeof(quint16));
     m_tcpSocket->write(arrBlock);
 }
@@ -152,3 +223,32 @@ void ChatClient::processMessage(const AuthorizationAnswer *msg)
         emit errorOccured(err);
     }
 }
+
+void ChatClient::processMessage(const DisconnectMessage *msg)
+{
+    QString message;
+    message = msg->sender + " has left from server";
+    qDebug() << "Processing disconnect message from:" << msg->sender;
+    emit messageToDisplay(message);
+}
+
+void ChatClient::processMessage(const ChannelListMessage *msg)
+{
+    channelList = msg->channelList.keys();
+    emit displayChannelList(channelList);
+}
+
+void ChatClient::processMessage(const ChannelJoinResult *msg)
+{
+    QString channelname = msg->channelName;
+    bool result = msg->result;
+    emit channelJoin(channelname, result);
+}
+
+void ChatClient::processMessage(const ChannelSystemMessage *msg)
+{
+    QString channelname = msg->channelName;
+    QString text = msg->message;
+    emit channelSystemMsg(channelname, text);
+}
+
