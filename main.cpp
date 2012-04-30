@@ -7,9 +7,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     ChatWindow mainwindow;
     ChatAuthWindow authwindow;
-
-    authwindow.exec();
-    mainwindow.show();
-
+    QObject::connect(&authwindow, SIGNAL(authorized(QString,QString,QTcpSocket*)), &mainwindow, SLOT(connectToServer(QString,QString,QTcpSocket*)));
+    authwindow.show();
     return a.exec();
 }

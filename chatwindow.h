@@ -20,18 +20,18 @@ public:
 private:
     Ui::ChatWindow *ui;
     ChatClient *m_client;
-    RegisterBot *m_regBot;
 
 signals:
     void sendMessage(const QString &, const QString &);
 
 private slots:
-    void connectToServer();
     void clientError(const QString &);
     void displayMessage(const QString &msgText);
     void clientAuthorized();
     void postMessage();
     void on_pushButton_2_clicked();
+public slots:
+    void connectToServer(QString username, QString password, QTcpSocket *socket);
 };
 
 #endif // CHATWINDOW_H

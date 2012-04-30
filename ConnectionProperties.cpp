@@ -10,5 +10,6 @@ ConnectionProperties::ConnectionProperties(QWidget *parent) :
 
 ConnectionProperties::~ConnectionProperties()
 {
+    emit properties(ui->hostEdit->text(), ui->portEdit->text().toUInt());
     delete ui;
 }

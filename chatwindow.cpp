@@ -7,8 +7,6 @@ ChatWindow::ChatWindow(QWidget *parent) :
     ui(new Ui::ChatWindow)
 {
     ui->setupUi(this);
-    ui->messageEdit->setEnabled(false);
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(connectToServer()));
     connect(ui->postButton, SIGNAL(clicked()), this, SLOT(postMessage()));
     connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
     m_client = new ChatClient(this);
@@ -24,14 +22,11 @@ ChatWindow::~ChatWindow()
     delete ui;
 }
 
-void ChatWindow::connectToServer()
+void ChatWindow::connectToServer(QString username, QString password, QTcpSocket *socket)
 {
-    QString host = ui->hostEdit->text();
-    quint16 port = ui->portEdit->text().toUInt();
-    QString username = ui->usernameEdit->text();
-    QString password = ui->passwordEdit->text();
     m_client->setUserInfo(username, password);
-    m_client->start(host, port);
+    m_client->start(socket);
+    this->show();
 }
 
 void ChatWindow::clientError(const QString &errorText)
@@ -47,7 +42,6 @@ void ChatWindow::displayMessage(const QString &msgText)
 
 void ChatWindow::clientAuthorized()
 {
-    ui->connectPropsGB->hide();
     ui->messageEdit->setEnabled(true);
     ui->ChatBrowser->append("Succesfully connected and authorized on server");
 }

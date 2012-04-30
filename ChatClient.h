@@ -18,7 +18,6 @@ private:
     QStringList channelList;
     void sendMessageToServer(ChatMessageBody *msgBody) const;
     void processMessage(const ChannelMessage *msg);
-    void processMessage(const AuthorizationAnswer *msg);
     void processMessage(const DisconnectMessage *msg);
     void processMessage(const RegistrationAnswer *msg);
     void processMessage(const ChannelListMessage *msg);
@@ -27,7 +26,7 @@ private:
 public:
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(const QString &un, const QString &pass);
-    bool start(const QString &host, const quint16 &port);
+    bool start(QTcpSocket *socket);
     void stop();
 
 signals:

@@ -31,9 +31,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>170</x>
      <y>250</y>
-     <width>91</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -115,7 +115,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="propertiesButton">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -126,6 +126,32 @@
    </property>
    <property name="text">
     <string>Connection properties</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="registerButton">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>190</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Register</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="infLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>220</y>
+     <width>241</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

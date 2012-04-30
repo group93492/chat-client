@@ -17,6 +17,8 @@ public:
 
 private:
     Ui::ConnectionProperties *ui;
+signals:
+    void properties(QString host, quint32 port);
 };
 
 #endif // CONNECTIONPROPERTIES_H

@@ -16,15 +16,14 @@ void ChatClient::setUserInfo(const QString &un, const QString &pass)
     m_userdataAssigned = !((m_username.isEmpty()) || (m_password.isEmpty()));
 }
 
-bool ChatClient::start(const QString &host, const quint16 &port)
+bool ChatClient::start(QTcpSocket *socket)
 {
     if (!m_userdataAssigned)
         return false;
-    m_tcpSocket = new QTcpSocket(this);
+    m_tcpSocket = socket;
     connect(m_tcpSocket, SIGNAL(connected()), SLOT(clientConnected()));
     connect(m_tcpSocket, SIGNAL(readyRead()), SLOT(clientGotNewMessage()));
     connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
-    m_tcpSocket->connectToHost(host, port);
     return true;
 }
 
@@ -69,13 +68,6 @@ void ChatClient::clientGotNewMessage()
         case cmtChannelMessage:
             {
                 ChannelMessage *msg = new ChannelMessage(input);
-                processMessage(msg);
-                delete msg;
-                break;
-            }
-        case cmtAuthorizationAnswer:
-            {
-                AuthorizationAnswer *msg = new AuthorizationAnswer(input);
                 processMessage(msg);
                 delete msg;
                 break;
@@ -203,25 +195,6 @@ void ChatClient::processMessage(const ChannelMessage *msg)
                         .arg(msg->sender)
                         .arg(msg->messageText);
     emit messageToDisplay(message);
-}
-
-void ChatClient::processMessage(const AuthorizationAnswer *msg)
-{
-    qDebug() << "Processing authorization answer:" << msg->authorizationResult;
-    if (m_authorized)
-        qDebug() << "Allready authorizated, don't need to process that";
-    if (msg->authorizationResult)
-    {
-        m_authorized = true;
-        //QString disp = "You passed authorization on server: " + tcpSocket->peerAddress().toString();
-        //emit messageToDisplay(disp);
-        emit clientAuthorized();
-    }
-    else
-    {
-        QString err = "Authorization problem: " + msg->denialReason;
-        emit errorOccured(err);
-    }
 }
 
 void ChatClient::processMessage(const DisconnectMessage *msg)

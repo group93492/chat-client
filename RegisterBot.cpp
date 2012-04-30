@@ -5,7 +5,7 @@ RegisterBot::RegisterBot(QObject *parent) :
 {
 }
 
-RegisterBot::RegisterBot(QString &host, quint32 port, QString &username, QString &password):
+RegisterBot::RegisterBot(QString &host, quint32 port, QString &username, QString &password, bool flag):
     m_socket(NULL),
     m_nextBlockSize(0),
     m_host(host),
@@ -18,12 +18,12 @@ RegisterBot::RegisterBot(QString &host, quint32 port, QString &username, QString
     connect(m_socket, SIGNAL(readyRead()), SLOT(botGotMessage()));
     connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
     m_socket->connectToHost(m_host, m_port);
+    m_flag = flag;
 }
 
 RegisterBot::~RegisterBot()
 {
     qDebug() << "deleting register bot";
-    closeConnection();
 }
 
 void RegisterBot::closeConnection()
@@ -34,11 +34,23 @@ void RegisterBot::closeConnection()
 
 void RegisterBot::botConnected()
 {
-    RegistrationRequest *msg = new RegistrationRequest();
-    msg->username = m_username;
-    msg->password = m_password;
-    sendMessageToServer(msg);
-    delete msg;
+    if(m_flag)
+    {
+        RegistrationRequest *msg = new RegistrationRequest();
+        msg->username = m_username;
+        msg->password = m_password;
+        sendMessageToServer(msg);
+        delete msg;
+    }
+    else
+    {
+        AuthorizationRequest *msg = new AuthorizationRequest();
+        msg->username = m_username;
+        msg->password = m_password;
+        sendMessageToServer(msg);
+        delete msg;
+    }
+
 }
 
 void RegisterBot::botGotMessage()
@@ -71,6 +83,13 @@ void RegisterBot::botGotMessage()
                 delete msg;
                 break;
             }
+        case cmtAuthorizationAnswer:
+            {
+                AuthorizationAnswer *msg = new AuthorizationAnswer(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 QString errorText = "Bot received unknown-typed message";
@@ -78,8 +97,8 @@ void RegisterBot::botGotMessage()
                 break;
             }
         }
+        m_nextBlockSize = 0;
     }
-    m_nextBlockSize = 0;
 }
 
 void RegisterBot::sendMessageToServer(ChatMessageBody *msgBody) const
@@ -113,4 +132,18 @@ void RegisterBot::socketError(QAbstractSocket::SocketError error)
                          "The connect was refused." :
                          QString(m_socket->errorString()));
     emit errorOccured(strError);
+}
+
+void RegisterBot::processMessage(const AuthorizationAnswer *msg)
+{
+    qDebug() << "Processing authorization answer:" << msg->authorizationResult;
+    if (msg->authorizationResult)
+    {
+        emit authorized(m_socket);
+    }
+    else
+    {
+        QString err = "Authorization problem: " + msg->denialReason;
+        emit errorOccured(err);
+    }
 }
