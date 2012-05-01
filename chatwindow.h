@@ -28,6 +28,9 @@ private:
     QMap<QString, chatTextBrowser*> m_textBrowsersMap;
     ListOfChannels *m_channelsList;
 
+protected:
+    virtual void closeEvent(QCloseEvent *event);
+
 signals:
     void sendMessage(const QString &, const QString &);
 

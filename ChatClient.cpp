@@ -36,9 +36,12 @@ bool ChatClient::start(QTcpSocket *socket)
     return true;
 }
 
-void ChatClient::stop()
+void ChatClient::shutdown()
 {
-
+    DisconnectMessage *msg = new DisconnectMessage();
+    msg->sender = username();
+    sendMessageToServer(msg);
+    delete msg;
 }
 
 void ChatClient::clientGotNewMessage()

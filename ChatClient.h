@@ -27,7 +27,7 @@ public:
     void setUserInfo(const QString &un, const QString &pass);
     QString username();
     bool start(QTcpSocket *socket);
-    void stop();
+    void shutdown();
 
 signals:
     void errorOccured(const QString &);

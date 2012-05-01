@@ -29,6 +29,12 @@ ChatWindow::~ChatWindow()
     delete ui;
 }
 
+void ChatWindow::closeEvent(QCloseEvent *event)
+{
+    m_client->shutdown();
+    event->accept();
+}
+
 void ChatWindow::connectToServer(QString username, QString password, QTcpSocket *socket)
 {
     m_client->setUserInfo(username, password);
