@@ -133,7 +133,7 @@
      <x>0</x>
      <y>0</y>
      <width>688</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -149,8 +149,11 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
   <tabstop>messageEdit</tabstop>
+  <tabstop>smilesPushButton</tabstop>
   <tabstop>postButton</tabstop>
+  <tabstop>allChannelsPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
