@@ -13,7 +13,7 @@ RegisterBot::RegisterBot(QString &host, quint32 port, QString &username, QString
     m_username(username),
     m_password(password)
 {
-    m_socket = new QTcpSocket(this);
+    m_socket = new QTcpSocket();
     connect(m_socket, SIGNAL(connected()), SLOT(botConnected()));
     connect(m_socket, SIGNAL(readyRead()), SLOT(botGotMessage()));
     connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));

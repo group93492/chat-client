@@ -26,7 +26,7 @@ void ChatAuthWindow::on_registerButton_clicked()
 {
     if(ui->passwordEdit->text() == "" || ui->usernameEdit->text() == "")
     {
-        ui->infLabel->setText("Invalid nick or password");
+        ui->infLabel->setText("Username and password must be non-empty.");
         return;
     }
     QString username = ui->usernameEdit->text();
@@ -41,8 +41,11 @@ void ChatAuthWindow::registrationHandler(bool registrationResult, QString &denia
     if(!registrationResult)
         ui->infLabel->setText(denialReason);
     else
+    {
         ui->infLabel->setText("Registration was successful");
-    m_bot->closeConnection();
+        m_bot->closeConnection();
+        delete m_bot;
+    }
 }
 
 void ChatAuthWindow::on_propertiesButton_clicked()
@@ -62,7 +65,7 @@ void ChatAuthWindow::on_connectButton_clicked()
 {
     if(ui->passwordEdit->text() == "" || ui->usernameEdit->text() == "")
     {
-        ui->infLabel->setText("Invalid nick or password");
+        ui->infLabel->setText("Username and password must be non-empty.");
         return;
     }
     QString username = ui->usernameEdit->text();
