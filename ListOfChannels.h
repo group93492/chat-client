@@ -20,7 +20,8 @@ private:
     Ui::ListOfChannels *ui;
 
 public slots:
-    void setChannelsList(QMap<QString, QString> list);
+    void setAllChannelsList(QMap<QString, QString> list);
+    void getchannelJoinResult(QString channelName, bool result);
 };
 
 #endif // LISTOFCHANNELS_H

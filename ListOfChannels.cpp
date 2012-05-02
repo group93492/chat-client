@@ -15,7 +15,7 @@ ListOfChannels::~ListOfChannels()
     delete ui;
 }
 
-void ListOfChannels::setChannelsList(QMap<QString, QString> list)
+void ListOfChannels::setAllChannelsList(QMap<QString, QString> list)
 {
     QTableWidgetItem *item;
     ui->tableWidget->setRowCount(list.size());
@@ -29,4 +29,9 @@ void ListOfChannels::setChannelsList(QMap<QString, QString> list)
         ui->tableWidget->setItem(row, 1, item);
         ++row;
     }
+}
+
+void ListOfChannels::getchannelJoinResult(QString channelName, bool result)
+{
+
 }

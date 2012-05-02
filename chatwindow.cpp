@@ -20,10 +20,15 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(m_client, SIGNAL(userList(QString,QStringList)), this, SLOT(setChannelUsers(QString,QStringList)));
     connect(m_client, SIGNAL(channelSystemMsg(QString,QString)), this, SLOT(addChannelSystemMessage(QString,QString)));
     connect(this, SIGNAL(sendMessage(const QString&, const QString&)), m_client, SLOT(sendChannelMessage(const QString&, const QString&)));
-    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(removeChannel(int)));
+    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(removeChannelTab(int)));
     connect(m_smiles, SIGNAL(smileClicked(QString)), SLOT(insertText(QString)));
     connect(ui->allChannelsPushButton, SIGNAL(clicked()), m_channelsList, SLOT(show()));
-    connect(m_client, SIGNAL(channelList(QMap<QString,QString>)), m_channelsList, SLOT(setChannelsList(QMap<QString,QString>)));
+//    connect(m_client, SIGNAL(displayChannelList(QMap<QString,QString>)), m_channelsList, SLOT(setAllChannelsList(QMap<QString,QString>)));
+    connect(m_client,
+            SIGNAL(displayChannelList(QMap<QString,QString>, ChatClient::ChannelListType)),
+            this,
+            SLOT(processChannelList(QMap<QString,QString>, ChatClient::ChannelListType)));
+    connect(this, SIGNAL(sendAllChannelsList(QMap<QString,QString>)), m_channelsList, SLOT(setAllChannelsList(QMap<QString,QString>)));
 }
 
 ChatWindow::~ChatWindow()
@@ -42,6 +47,7 @@ void ChatWindow::connectToServer(QString username, QString password, QTcpSocket 
     m_client->setUserInfo(username, password);
     m_client->start(socket);
     //
+
     chatTextBrowser *textBrowser = new chatTextBrowser(ui->tabWidget->currentWidget(), m_smiles->getSmiles());
     textBrowser->setOwnerNick(username);
     QHBoxLayout *layout = new QHBoxLayout();
@@ -53,6 +59,7 @@ void ChatWindow::connectToServer(QString username, QString password, QTcpSocket 
     ui->tabWidget->currentWidget()->setLayout(layout);
     connect(textBrowser, SIGNAL(lastMessage(QString)), this, SLOT(lastMessageEdit(QString)));
     connect(textBrowser, SIGNAL(onNickClicked(QString)), SLOT(insertText(QString)));
+
     //
     this->show();
 }
@@ -60,6 +67,7 @@ void ChatWindow::connectToServer(QString username, QString password, QTcpSocket 
 void ChatWindow::clientError(const QString &errorText)
 {
     QString errmsg = "Error: " + errorText;
+    addChannelSystemMessage("main", errmsg);
 }
 
 void ChatWindow::displayMessage(const QString &msgText)
@@ -75,13 +83,13 @@ void ChatWindow::postMessage()
 {
     QString body = ui->messageEdit->text();
     QString receiver = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
-	if (receiver.isEmpty())
+    if (receiver.isEmpty())
         receiver = "main";
     emit sendMessage(receiver, body);
     ui->messageEdit->clear();
 }
 
-void ChatWindow::addChannel(QString name)
+void ChatWindow::addChannelTab(QString name)
 {
     QWidget *widget = new QWidget(ui->tabWidget);
     chatTextBrowser *textBrowser = new chatTextBrowser(ui->tabWidget->currentWidget(), m_smiles->getSmiles());
@@ -98,7 +106,7 @@ void ChatWindow::addChannel(QString name)
     connect(textBrowser, SIGNAL(onNickClicked(QString)), SLOT(insertText(QString)));
 }
 
-void ChatWindow::removeChannel(int index)
+void ChatWindow::removeChannelTab(int index)
 {
     if(index != 0)
     {
@@ -136,4 +144,20 @@ void ChatWindow::setChannelUsers(QString channelname, QStringList list)
         m_listWidgetsMap.value(channelname)->clear();
         m_listWidgetsMap.value(channelname)->addItems(list);
     }
+}
+
+void ChatWindow::processChannelList(QMap<QString, QString> list, ChatClient::ChannelListType type)
+{
+    if (type == ChatClient::listOfJoined)
+        setMyChannelList(list);
+    else //type == ChatClient::listOfAll
+        emit sendAllChannelsList(list);
+}
+
+void ChatWindow::setMyChannelList(QMap<QString, QString> list)
+{
+    QMap<QString, QString>::iterator channel = list.begin();
+    for(;channel != list.end(); ++channel)
+        if (!m_textBrowsersMap.contains(channel.key()))
+            addChannelTab(channel.key());
 }

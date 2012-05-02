@@ -133,6 +133,8 @@ public:
 };
 
 //maybe server should send information about every channel in the channel list, not in the other message?
+//maybe, maybe
+//but it sounds like xml or json
 class ChannelInfoMessage: public ChatMessageBody
 {
 public:

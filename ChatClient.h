@@ -24,6 +24,11 @@ private:
     void processMessage(const ChannelSystemMessage *msg);
     void processMessage(const ChannelUserList *msg);
 public:
+    enum ChannelListType
+    {
+        listOfJoined,
+        listOfAll
+    };
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(const QString &un, const QString &pass);
     QString username();
@@ -34,7 +39,7 @@ signals:
     void errorOccured(const QString &);
     void channelMsg(QString channel, QString nick, QString msg);
     void clientAuthorized();
-    void channelList(QMap<QString, QString> list);
+    void displayChannelList(QMap<QString, QString> list, ChatClient::ChannelListType type);
     void channelJoin(QString channelname, bool result);
     void channelSystemMsg(QString channel, QString msg);
     void userList(QString channelname, QStringList list);
@@ -49,7 +54,6 @@ public slots:
     void allChannelsRequest();
     void joinChannelRequest(QString channelname);
     void leaveChannel(QString channelname);
-
 };
 
 #endif // CHATCLIENT_H

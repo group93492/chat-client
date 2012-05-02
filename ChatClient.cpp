@@ -28,9 +28,13 @@ bool ChatClient::start(QTcpSocket *socket)
     m_tcpSocket = socket;
     connect(m_tcpSocket, SIGNAL(readyRead()), SLOT(clientGotNewMessage()));
     connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
+    //request list of all channels from server
     ChannelListRequest *msg = new ChannelListRequest();
     msg->listType = ChannelListRequest::listOfAll;
     msg->nick = m_username;
+    sendMessageToServer(msg);
+    //and also request list of channels joined by client
+    msg->listType = ChannelListRequest::listOfJoined;
     sendMessageToServer(msg);
     delete msg;
     return true;
@@ -118,7 +122,6 @@ void ChatClient::clientGotNewMessage()
     }
 }
 
-
 void ChatClient::socketError(const QAbstractSocket::SocketError &error)
 {
     QString strError =
@@ -149,7 +152,6 @@ void ChatClient::sendDisconnectMessage() const
     msg->sender = m_username;
     sendMessageToServer(msg);
     m_tcpSocket->close();
-//    QString message = "Disconnect from server";
     delete msg;
 }
 
@@ -186,7 +188,6 @@ void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
     QDataStream output(&arrBlock, QIODevice::WriteOnly);
     output.setVersion(QDataStream::Qt_4_7);
     output << quint16(0);
-//    ChatMessageSerializer::packMessage(output, msgBody);
     ChatMessageHeader *header = new ChatMessageHeader(msgBody);
     header->pack(output);
     msgBody->pack(output);
@@ -212,7 +213,8 @@ void ChatClient::processMessage(const DisconnectMessage *msg)
 
 void ChatClient::processMessage(const ChannelListMessage *msg)
 {
-    emit channelList(msg->channelList);
+    ChatClient::ChannelListType type = ChatClient::ChannelListType(msg->listType);
+    emit displayChannelList(msg->channelList, type);
 }
 
 void ChatClient::processMessage(const ChannelJoinResult *msg)
