@@ -1,6 +1,7 @@
 #include "chatwindow.h"
 #include "ui_chatwindow.h"
 #include "ListOfChannels.h"
+#include <QMessageBox>
 
 ChatWindow::ChatWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -110,6 +111,12 @@ void ChatWindow::removeChannelTab(int index)
 {
     if(index != 0)
     {
+        if (QMessageBox::question(this,
+                                  "Exit confirmation.",
+                                  "Are you sure you want to leave this channel?",
+                                  QMessageBox::Yes, QMessageBox::Cancel) == QMessageBox::Cancel)
+            return;
+        m_client->leaveChannel(ui->tabWidget->tabText(index));
         m_textBrowsersMap.remove(ui->tabWidget->tabText(index));
         ui->tabWidget->removeTab(index);
     }

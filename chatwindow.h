@@ -52,6 +52,7 @@ private slots:
     void lastMessageEdit(QString message);
     void setChannelUsers(QString channelname, QStringList list);
     void processChannelList(QMap<QString,QString> list, ChatClient::ChannelListType type);
+
 public slots:
     void connectToServer(QString username, QString password, QTcpSocket *socket);
 };
