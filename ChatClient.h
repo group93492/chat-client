@@ -22,6 +22,7 @@ private:
     void processMessage(const ChannelListMessage *msg);
     void processMessage(const ChannelJoinResult *msg);
     void processMessage(const ChannelSystemMessage *msg);
+    void processMessage(const ChannelUserList *msg);
 public:
     explicit ChatClient(QObject *parent = 0);
     void setUserInfo(const QString &un, const QString &pass);
@@ -36,6 +37,7 @@ signals:
     void channelList(QMap<QString, QString> list);
     void channelJoin(QString channelname, bool result);
     void channelSystemMsg(QString channel, QString msg);
+    void userList(QString channelname, QStringList list);
 
 private slots:
     void clientGotNewMessage();

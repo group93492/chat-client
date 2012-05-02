@@ -2,7 +2,7 @@
 #define CHATWINDOW_H
 
 #include <QMainWindow>
-#include <QListView>
+#include <QListWidget>
 #include "smileswidgets.h"
 #include "ChatClient.h"
 #include "RegisterBot.h"
@@ -26,6 +26,7 @@ private:
     ChatClient *m_client;
     smilesWidget *m_smiles;
     QMap<QString, chatTextBrowser*> m_textBrowsersMap;
+    QMap<QString, QListWidget*> m_listWidgetsMap;
     ListOfChannels *m_channelsList;
 
 protected:
@@ -42,8 +43,10 @@ private slots:
     void addChannel(QString name);
     void removeChannel(int index);
     void addChannelMessage(QString channel, QString nick, QString message);
+    void addChannelSystemMessage(QString channel, QString message);
     void insertText(QString smileName);
     void lastMessageEdit(QString message);
+    void setChannelUsers(QString channelname, QStringList list);
 public slots:
     void connectToServer(QString username, QString password, QTcpSocket *socket);
 };

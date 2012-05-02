@@ -101,6 +101,13 @@ void ChatClient::clientGotNewMessage()
                 delete msg;
                 break;
             }
+        case cmtChannelUserList:
+            {
+                ChannelUserList *msg = new ChannelUserList(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
@@ -220,5 +227,12 @@ void ChatClient::processMessage(const ChannelSystemMessage *msg)
     QString channelname = msg->channelName;
     QString text = msg->message;
     emit channelSystemMsg(channelname, text);
+}
+
+void ChatClient::processMessage(const ChannelUserList *msg)
+{
+    QStringList list = msg->userList;
+    QString channel = msg->channelName;
+    emit userList(channel, list);
 }
 
