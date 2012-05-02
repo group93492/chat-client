@@ -27,7 +27,7 @@ private:
     smilesWidget *m_smiles;
     QMap<QString, chatTextBrowser*> m_textBrowsersMap;
     QMap<QString, QListWidget*> m_listWidgetsMap;
-    ListOfChannels *m_channelsList;
+    ListOfChannels *m_channelListDialog;
     void setMyChannelList(QMap<QString,QString> list);
 
 protected:
@@ -37,7 +37,7 @@ signals:
     void sendMessage(const QString &, const QString &);
     void sendAllChannelsList(QMap<QString,QString>);
     void requestUserList(QString);
-
+    void replyJoinRequestResult(QString, bool);
 
 private slots:
     void clientError(const QString &);
@@ -52,6 +52,7 @@ private slots:
     void lastMessageEdit(QString message);
     void setChannelUsers(QString channelname, QStringList list);
     void processChannelList(QMap<QString,QString> list, ChatClient::ChannelListType type);
+    void getChannelJoinResult(QString channelName, bool result);
 
 public slots:
     void connectToServer(QString username, QString password, QTcpSocket *socket);

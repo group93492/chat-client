@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QTableWidgetItem>
+#include "ChatClient.h"
 
 namespace Ui {
     class ListOfChannels;
@@ -19,9 +20,18 @@ public:
 private:
     Ui::ListOfChannels *ui;
 
+protected:
+    virtual void showEvent(QShowEvent *event);
+
+signals:
+    void requestJoinChannel(QString);
+
 public slots:
     void setAllChannelsList(QMap<QString, QString> list);
-    void getchannelJoinResult(QString channelName, bool result);
+    void getChannelJoinResult(QString channelName, bool result);
+
+private slots:
+    void on_joinButton_clicked();
 };
 
 #endif // LISTOFCHANNELS_H

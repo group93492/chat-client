@@ -34,13 +34,14 @@ public:
     QString username();
     bool start(QTcpSocket *socket);
     void shutdown();
+    void requestLists();
 
 signals:
     void errorOccured(const QString &);
     void channelMsg(QString channel, QString nick, QString msg);
     void clientAuthorized();
     void displayChannelList(QMap<QString, QString> list, ChatClient::ChannelListType type);
-    void channelJoin(QString channelname, bool result);
+    void channelJoinResult(QString channelname, bool result);
     void channelSystemMsg(QString channel, QString msg);
     void userList(QString channelname, QStringList list);
 

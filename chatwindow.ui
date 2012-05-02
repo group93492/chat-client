@@ -126,6 +126,11 @@
      <string>:)</string>
     </property>
    </widget>
+   <zorder>postButton</zorder>
+   <zorder>messageEdit</zorder>
+   <zorder>tabWidget</zorder>
+   <zorder>smilesPushButton</zorder>
+   <zorder>allChannelsPushButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

@@ -7,7 +7,7 @@ ListOfChannels::ListOfChannels(QWidget *parent) :
     ui(new Ui::ListOfChannels)
 {
     ui->setupUi(this);
-    ui->tableWidget->setColumnCount(2);
+    ui->channelTable->setColumnCount(2);
 }
 
 ListOfChannels::~ListOfChannels()
@@ -15,23 +15,55 @@ ListOfChannels::~ListOfChannels()
     delete ui;
 }
 
+void ListOfChannels::showEvent(QShowEvent *event)
+{
+    ui->joinStatusLabel->clear();
+}
+
 void ListOfChannels::setAllChannelsList(QMap<QString, QString> list)
 {
     QTableWidgetItem *item;
-    ui->tableWidget->setRowCount(list.size());
+    ui->channelTable->clear();
+    ui->channelTable->setRowCount(list.size());
     QMap<QString, QString>::iterator i = list.begin();
     quint8 row = 0;
     for(;i != list.end(); ++i)
     {
         item = new QTableWidgetItem(i.key());
-        ui->tableWidget->setItem(row, 0, item);
+        ui->channelTable->setItem(row, 0, item);
         item = new QTableWidgetItem(i.value());
-        ui->tableWidget->setItem(row, 1, item);
+        ui->channelTable->setItem(row, 1, item);
         ++row;
     }
 }
 
-void ListOfChannels::getchannelJoinResult(QString channelName, bool result)
+void ListOfChannels::getChannelJoinResult(QString channelName, bool result)
 {
+    //notify user that his join was succesfull. or not
+    QString newStatus;
+    if (result)
+    {
+        newStatus = "You've sucessfully joined channel %1.";
+    }
+    else
+    {
+        newStatus = "Your attempt to join channel %1 wasn't successfull.";
+    }
+    newStatus.arg(channelName);
+    ui->joinStatusLabel->setText(newStatus);
+}
 
+void ListOfChannels::on_joinButton_clicked()
+{
+    //send signal requestJoinChannel if row is checked
+    QModelIndexList indexes = ui->channelTable->selectionModel()->selectedRows();
+    if (indexes.isEmpty())
+    {
+        ui->joinStatusLabel->setText("You must select any channel to join it.");
+        return;
+    }
+    QModelIndex index = indexes[0];
+    QString channelName = ui->channelTable->item(index.row(), index.column())->text();
+    emit requestJoinChannel(channelName);
+    ui->joinStatusLabel->setText("Join request has been sent.");
 }

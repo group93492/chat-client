@@ -12,7 +12,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
     m_client = new ChatClient(this);
     m_smiles = new smilesWidget(this);
-    m_channelsList = new ListOfChannels(this);
+    m_channelListDialog = new ListOfChannels(this);
     //connect part
     connect(ui->smilesPushButton, SIGNAL(clicked()), m_smiles, SLOT(show()));
     connect(m_client, SIGNAL(clientAuthorized()), this, SLOT(clientAuthorized()));
@@ -23,13 +23,14 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(this, SIGNAL(sendMessage(const QString&, const QString&)), m_client, SLOT(sendChannelMessage(const QString&, const QString&)));
     connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(removeChannelTab(int)));
     connect(m_smiles, SIGNAL(smileClicked(QString)), SLOT(insertText(QString)));
-    connect(ui->allChannelsPushButton, SIGNAL(clicked()), m_channelsList, SLOT(show()));
-//    connect(m_client, SIGNAL(displayChannelList(QMap<QString,QString>)), m_channelsList, SLOT(setAllChannelsList(QMap<QString,QString>)));
+    connect(ui->allChannelsPushButton, SIGNAL(clicked()), m_channelListDialog, SLOT(show()));
+    connect(m_channelListDialog, SIGNAL(requestJoinChannel(QString)), m_client, SLOT(joinChannelRequest(QString)));
+    connect(m_client, SIGNAL(channelJoinResult(QString,bool)), m_channelListDialog, SLOT(getChannelJoinResult(QString,bool)));
     connect(m_client,
             SIGNAL(displayChannelList(QMap<QString,QString>, ChatClient::ChannelListType)),
             this,
             SLOT(processChannelList(QMap<QString,QString>, ChatClient::ChannelListType)));
-    connect(this, SIGNAL(sendAllChannelsList(QMap<QString,QString>)), m_channelsList, SLOT(setAllChannelsList(QMap<QString,QString>)));
+    connect(this, SIGNAL(sendAllChannelsList(QMap<QString,QString>)), m_channelListDialog, SLOT(setAllChannelsList(QMap<QString,QString>)));
 }
 
 ChatWindow::~ChatWindow()
@@ -114,7 +115,7 @@ void ChatWindow::removeChannelTab(int index)
         if (QMessageBox::question(this,
                                   "Exit confirmation.",
                                   "Are you sure you want to leave this channel?",
-                                  QMessageBox::Yes, QMessageBox::Cancel) == QMessageBox::Cancel)
+                                  QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
             return;
         m_client->leaveChannel(ui->tabWidget->tabText(index));
         m_textBrowsersMap.remove(ui->tabWidget->tabText(index));
@@ -159,6 +160,13 @@ void ChatWindow::processChannelList(QMap<QString, QString> list, ChatClient::Cha
         setMyChannelList(list);
     else //type == ChatClient::listOfAll
         emit sendAllChannelsList(list);
+}
+
+void ChatWindow::getChannelJoinResult(QString channelName, bool result)
+{
+    emit replyJoinRequestResult(channelName, result);
+    //update channel lists
+    m_client->requestLists();
 }
 
 void ChatWindow::setMyChannelList(QMap<QString, QString> list)

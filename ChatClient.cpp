@@ -28,15 +28,7 @@ bool ChatClient::start(QTcpSocket *socket)
     m_tcpSocket = socket;
     connect(m_tcpSocket, SIGNAL(readyRead()), SLOT(clientGotNewMessage()));
     connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
-    //request list of all channels from server
-    ChannelListRequest *msg = new ChannelListRequest();
-    msg->listType = ChannelListRequest::listOfAll;
-    msg->nick = m_username;
-    sendMessageToServer(msg);
-    //and also request list of channels joined by client
-    msg->listType = ChannelListRequest::listOfJoined;
-    sendMessageToServer(msg);
-    delete msg;
+    requestLists();
     return true;
 }
 
@@ -44,6 +36,19 @@ void ChatClient::shutdown()
 {
     DisconnectMessage *msg = new DisconnectMessage();
     msg->sender = username();
+    sendMessageToServer(msg);
+    delete msg;
+}
+
+void ChatClient::requestLists()
+{
+    //request list of all channels from server
+    ChannelListRequest *msg = new ChannelListRequest();
+    msg->listType = ChannelListRequest::listOfAll;
+    msg->nick = m_username;
+    sendMessageToServer(msg);
+    //and also request list of channels joined by client
+    msg->listType = ChannelListRequest::listOfJoined;
     sendMessageToServer(msg);
     delete msg;
 }
@@ -221,7 +226,7 @@ void ChatClient::processMessage(const ChannelJoinResult *msg)
 {
     QString channelname = msg->channelName;
     bool result = msg->result;
-    emit channelJoin(channelname, result);
+    emit channelJoinResult(channelname, result);
 }
 
 void ChatClient::processMessage(const ChannelSystemMessage *msg)
