@@ -23,6 +23,7 @@ private:
     void processMessage(const ChannelJoinResult *msg);
     void processMessage(const ChannelSystemMessage *msg);
     void processMessage(const ChannelUserList *msg);
+    void processMessage(const ChannelCreateResult *msg);
 public:
     enum ChannelListType
     {
@@ -44,6 +45,7 @@ signals:
     void channelJoinResult(QString channelname, bool result);
     void channelSystemMsg(QString channel, QString msg);
     void userList(QString channelname, QStringList list);
+    void channelCreateResult(QString str);
 
 private slots:
     void clientGotNewMessage();
@@ -55,6 +57,7 @@ public slots:
     void allChannelsRequest();
     void joinChannelRequest(QString channelname);
     void leaveChannel(QString channelname);
+    void createChannelRequest(QString name, QString topic, QString description);
 };
 
 #endif // CHATCLIENT_H

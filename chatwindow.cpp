@@ -31,6 +31,8 @@ ChatWindow::ChatWindow(QWidget *parent) :
             this,
             SLOT(processChannelList(QMap<QString,QString>, ChatClient::ChannelListType)));
     connect(this, SIGNAL(sendAllChannelsList(QMap<QString,QString>)), m_channelListDialog, SLOT(setAllChannelsList(QMap<QString,QString>)));
+    connect(m_channelListDialog, SIGNAL(requestCreateChannel(QString,QString,QString)), m_client, SLOT(createChannelRequest(QString,QString,QString)));
+    connect(m_client, SIGNAL(channelCreateResult(QString)), m_channelListDialog, SLOT(getChannelCreateResult(QString)));
 }
 
 ChatWindow::~ChatWindow()

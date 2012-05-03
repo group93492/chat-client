@@ -117,6 +117,13 @@ void ChatClient::clientGotNewMessage()
                 delete msg;
                 break;
             }
+        case cmtChannelCreateResult:
+            {
+                ChannelCreateResult *msg = new ChannelCreateResult(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
@@ -187,6 +194,17 @@ void ChatClient::leaveChannel(QString channelname)
     delete msg;
 }
 
+void ChatClient::createChannelRequest(QString name, QString topic, QString description)
+{
+    ChannelCreateRequest *msg = new ChannelCreateRequest();
+    msg->channelName = name;
+    msg->channelTopic = topic;
+    msg->channelDescription = description;
+    msg->username = m_username;
+    sendMessageToServer(msg);
+    delete msg;
+}
+
 void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 {
     QByteArray arrBlock;
@@ -241,5 +259,13 @@ void ChatClient::processMessage(const ChannelUserList *msg)
     QStringList list = msg->userList;
     QString channel = msg->channelName;
     emit userList(channel, list);
+}
+
+void ChatClient::processMessage(const ChannelCreateResult *msg)
+{
+    if(msg->answer)
+        emit channelCreateResult("Channel created!");
+    else
+        emit channelCreateResult(msg->denialReason);
 }
 

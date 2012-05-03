@@ -8,6 +8,8 @@ ListOfChannels::ListOfChannels(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->channelTable->setColumnCount(2);
+    connect(&m_dialog, SIGNAL(createChannel(QString,QString,QString)), this, SLOT(replyCreateSignal(QString,QString,QString)));
+    connect(ui->createButton, SIGNAL(clicked()), &m_dialog, SLOT(show()));
 }
 
 ListOfChannels::~ListOfChannels()
@@ -51,6 +53,16 @@ void ListOfChannels::getChannelJoinResult(QString channelName, bool result)
     }
     newStatus.arg(channelName);
     ui->joinStatusLabel->setText(newStatus);
+}
+
+void ListOfChannels::getChannelCreateResult(QString str)
+{
+    ui->joinStatusLabel->setText(str);
+}
+
+void ListOfChannels::replyCreateSignal(QString name, QString topic, QString description)
+{
+    emit requestCreateChannel(name, topic, description);
 }
 
 void ListOfChannels::on_joinButton_clicked()
