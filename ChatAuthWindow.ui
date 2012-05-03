@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Welcome!</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="enabled">
@@ -54,7 +54,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>boyarin777</string>
+    <string/>
    </property>
   </widget>
   <widget class="QPushButton" name="connectButton">
@@ -96,7 +96,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>yoba</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="passwordLbl">

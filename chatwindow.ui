@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>688</width>
+    <width>679</width>
     <height>533</height>
    </rect>
   </property>
@@ -26,42 +26,23 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>POHOOI</string>
+   <string>Client</string>
   </property>
   <property name="tabShape">
    <enum>QTabWidget::Rounded</enum>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="postButton">
+   <widget class="QPushButton" name="smilesPushButton">
     <property name="geometry">
      <rect>
-      <x>560</x>
-      <y>440</y>
-      <width>111</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>111</width>
-      <height>31</height>
-     </size>
-    </property>
-    <property name="text">
-     <string>Post</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="allChannelsPushButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>440</y>
-      <width>131</width>
-      <height>31</height>
+      <x>640</x>
+      <y>410</y>
+      <width>31</width>
+      <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>See all channels</string>
+     <string>:)</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="messageEdit">
@@ -70,7 +51,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>410</y>
       <width>631</width>
       <height>25</height>
@@ -80,10 +61,10 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>10</y>
-      <width>671</width>
-      <height>401</height>
+      <x>10</x>
+      <y>0</y>
+      <width>659</width>
+      <height>399</height>
      </rect>
     </property>
     <property name="locale">
@@ -113,32 +94,46 @@
      </attribute>
     </widget>
    </widget>
-   <widget class="QPushButton" name="smilesPushButton">
+   <widget class="QPushButton" name="postButton">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>410</y>
-      <width>31</width>
-      <height>24</height>
+      <x>530</x>
+      <y>440</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>111</width>
+      <height>31</height>
+     </size>
+    </property>
+    <property name="text">
+     <string>Post</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="allChannelsPushButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>440</y>
+      <width>121</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>:)</string>
+     <string>See all channels</string>
     </property>
    </widget>
-   <zorder>postButton</zorder>
-   <zorder>messageEdit</zorder>
-   <zorder>tabWidget</zorder>
-   <zorder>smilesPushButton</zorder>
-   <zorder>allChannelsPushButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>688</width>
-     <height>25</height>
+     <width>679</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -154,11 +149,8 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>tabWidget</tabstop>
   <tabstop>messageEdit</tabstop>
   <tabstop>smilesPushButton</tabstop>
-  <tabstop>postButton</tabstop>
-  <tabstop>allChannelsPushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

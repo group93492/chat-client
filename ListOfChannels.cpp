@@ -7,7 +7,6 @@ ListOfChannels::ListOfChannels(QWidget *parent) :
     ui(new Ui::ListOfChannels)
 {
     ui->setupUi(this);
-    ui->channelTable->setColumnCount(2);
     connect(&m_dialog, SIGNAL(createChannel(QString,QString,QString)), this, SLOT(replyCreateSignal(QString,QString,QString)));
     connect(ui->createButton, SIGNAL(clicked()), &m_dialog, SLOT(show()));
 }
@@ -45,13 +44,12 @@ void ListOfChannels::getChannelJoinResult(QString channelName, bool result)
     QString newStatus;
     if (result)
     {
-        newStatus = "You've sucessfully joined channel %1.";
+        newStatus = "You've sucessfully joined channel " + channelName + ".";
     }
     else
     {
-        newStatus = "Your attempt to join channel %1 wasn't successfull.";
+        newStatus = "Your attempt to join channel " + channelName + " wasn't successfull.";
     }
-    newStatus.arg(channelName);
     ui->joinStatusLabel->setText(newStatus);
 }
 
