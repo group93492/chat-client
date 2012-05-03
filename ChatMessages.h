@@ -22,6 +22,7 @@ enum ChatMessageType
     cmtChannelJoinResult,
     cmtChannelLeaveMessage,
     cmtChannelSystemMessage,
+    cmtServerShutdownMessage,
     cmtChannelCreateRequest,
     cmtChannelCreateResult,
     cmtChannelUserList
@@ -133,8 +134,7 @@ public:
 };
 
 //maybe server should send information about every channel in the channel list, not in the other message?
-//maybe, maybe
-//but it sounds like xml or json
+//hehe, maybe
 class ChannelInfoMessage: public ChatMessageBody
 {
 public:
@@ -204,6 +204,16 @@ public:
     ChannelSystemMessage(QDataStream &stream);
     QString channelName;
     QString message;
+    bool pack(QDataStream &stream) const;
+    bool unpack(QDataStream &stream);
+};
+
+class ServerShutdownMessage : public ChatMessageBody
+{
+public:
+    ServerShutdownMessage();
+    ServerShutdownMessage(QDataStream &stream);
+    QString shutdownReason;
     bool pack(QDataStream &stream) const;
     bool unpack(QDataStream &stream);
 };
