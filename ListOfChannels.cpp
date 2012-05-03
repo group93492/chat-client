@@ -7,6 +7,7 @@ ListOfChannels::ListOfChannels(QWidget *parent) :
     ui(new Ui::ListOfChannels)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon("icon.png"));
     connect(&m_dialog, SIGNAL(createChannel(QString,QString,QString)), this, SLOT(replyCreateSignal(QString,QString,QString)));
     connect(ui->createButton, SIGNAL(clicked()), &m_dialog, SLOT(show()));
 }

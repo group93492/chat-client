@@ -9,6 +9,7 @@ ChatAuthWindow::ChatAuthWindow(QWidget *parent) :
     ui->setupUi(this);
     m_host = "localhost";
     m_port = 33033;
+    setWindowIcon(QIcon("icon.png"));
 }
 
 ChatAuthWindow::~ChatAuthWindow()

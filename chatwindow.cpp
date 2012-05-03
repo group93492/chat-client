@@ -8,6 +8,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     ui(new Ui::ChatWindow)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon("icon.png"));
     connect(ui->postButton, SIGNAL(clicked()), this, SLOT(postMessage()));
     connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
     m_client = new ChatClient(this);

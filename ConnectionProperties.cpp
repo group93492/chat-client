@@ -6,6 +6,7 @@ ConnectionProperties::ConnectionProperties(QWidget *parent) :
     ui(new Ui::ConnectionProperties)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon("icon.png"));
 }
 
 ConnectionProperties::~ConnectionProperties()

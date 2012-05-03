@@ -6,6 +6,7 @@ CreateChannelDialog::CreateChannelDialog(QWidget *parent) :
     ui(new Ui::CreateChannelDialog)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon("icon.png"));
 }
 
 CreateChannelDialog::~CreateChannelDialog()
