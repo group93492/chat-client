@@ -13,6 +13,10 @@ ChatWindow::ChatWindow(QWidget *parent) :
     ui->tabWidget->currentWidget()->setLayout(new QHBoxLayout);
     widget->setParent(ui->tabWidget->currentWidget());
     ui->tabWidget->currentWidget()->layout()->addWidget(widget);
+    QStringList List;
+    List << "aaa" << "bbb";
+    widget->setUserList(List);
+
     //
     //
     //

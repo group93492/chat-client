@@ -1,12 +1,14 @@
 #include "ChatWidgets.h"
+#include <QDebug>
 
 GeneralChatWidget::GeneralChatWidget(QWidget *parent) :
     QWidget(parent)
 {
-    m_theme = new QLabel();
-    m_textBrowser = new chatTextBrowser();
-    m_userList = new QListWidget();
-    m_label = new QLabel("Users in channel: " + QString::number(m_userList->count()));
+    m_users = new QStringList;
+    m_theme = new QLabel(this);
+    m_textBrowser = new chatTextBrowser(this);
+    m_userList = new UserListWidget(this, m_users);
+    m_label = new QLabel("Users in channel: " + QString::number(m_userList->count()), this);
     m_theme->setFrameShape(QFrame::StyledPanel);
     m_theme->setFrameShadow(QFrame::Raised);
     m_theme->setAlignment(Qt::AlignHCenter);
@@ -24,24 +26,56 @@ GeneralChatWidget::GeneralChatWidget(QWidget *parent) :
 
 void GeneralChatWidget::setUserList(QStringList list)
 {
-    m_users = list;
-    m_users.sort();
-    m_userList->addItems(m_users);
-    m_label->setText("Users in channel: " + QString::number(m_users.count()));
+    list.sort();
+    m_users->clear();
+    m_users->append(list);
+    m_userList->addItems(list);
+    m_label->setText("Users in channel: " + QString::number(m_users->count()));
 }
 
 void GeneralChatWidget::setUserStatus(QString nick, QString status)
 {
-    if(m_users.contains(nick))
+    if(m_users->contains(nick))
     {
         if(status != "")
-            m_userList->item(m_users.indexOf(nick))->setText(nick + "[" + status + "]");
+            m_userList->item(m_users->indexOf(nick))->setText(nick + "[" + status + "]");
         else
-            m_userList->item(m_users.indexOf(nick))->setText(nick);
+            m_userList->item(m_users->indexOf(nick))->setText(nick);
     }
 }
 
 void GeneralChatWidget::appendMessage(QString nick, QString msg)
 {
     m_textBrowser->appendMessage(nick, msg);
+}
+
+UserListWidget::UserListWidget(QWidget *parent, QStringList *list) :
+    QListWidget(parent)
+{
+    m_list = list;
+}
+
+void UserListWidget::contextMenuEvent(QContextMenuEvent *e)
+{
+    if(this->itemAt(e->pos()) != NULL)
+    {
+        QMenu *menu = new QMenu();
+        menu->addAction("Send private message", this, SLOT(sendPMSignal()));
+        menu->addAction("Profile", this, SLOT(sendInfoSignal()));
+        menu->exec(e->globalPos());
+        delete menu;
+    }
+}
+
+void UserListWidget::sendInfoSignal()
+{
+    QString nick = m_list->value(this->row(this->selectedItems().first()));
+    qDebug() << nick;
+    emit onUserInformationClicked(nick);
+}
+
+void UserListWidget::sendPMSignal()
+{
+    QString nick = m_list->value(this->row(this->selectedItems().first()));
+    emit onPrivateMessageClicked(nick);
 }
