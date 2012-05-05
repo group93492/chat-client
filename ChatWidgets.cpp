@@ -5,7 +5,7 @@ GeneralChatWidget::GeneralChatWidget(QWidget *parent) :
     QWidget(parent)
 {
     m_users = new QStringList;
-    m_theme = new QLabel(this);
+    m_theme = new ThemeLabel(this);
     m_textBrowser = new chatTextBrowser(this);
     m_userList = new UserListWidget(this, m_users);
     m_label = new QLabel("Users in channel: " + QString::number(m_userList->count()), this);
@@ -70,7 +70,6 @@ void UserListWidget::contextMenuEvent(QContextMenuEvent *e)
 void UserListWidget::sendInfoSignal()
 {
     QString nick = m_list->value(this->row(this->selectedItems().first()));
-    qDebug() << nick;
     emit onUserInformationClicked(nick);
 }
 
@@ -78,4 +77,25 @@ void UserListWidget::sendPMSignal()
 {
     QString nick = m_list->value(this->row(this->selectedItems().first()));
     emit onPrivateMessageClicked(nick);
+}
+
+ThemeLabel::ThemeLabel(QWidget *parent) :
+    QLabel(parent)
+{
+}
+
+void ThemeLabel::changeTheme(QString theme)
+{
+    setText(theme);
+    m_dialog.hide();
+}
+
+void ThemeLabel::mousePressEvent(QMouseEvent *ev)
+{
+    if(ev->button() == Qt::LeftButton)
+    {
+        m_dialog.setTheme(this->text());
+        m_dialog.show();
+        connect(&m_dialog, SIGNAL(onOkButtonClicked(QString)), this, SLOT(changeTheme(QString)));
+    }
 }

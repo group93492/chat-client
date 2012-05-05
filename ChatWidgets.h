@@ -9,6 +9,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include "smileswidgets.h"
+#include "ChannelThemeDialog.h"
 
 class UserListWidget : public QListWidget
 {
@@ -27,12 +28,25 @@ signals:
     void onPrivateMessageClicked(QString nick);
 };
 
+class ThemeLabel : public QLabel
+{
+    Q_OBJECT
+public:
+    explicit ThemeLabel(QWidget *parent = 0);
+private:
+    ChannelThemeDialog m_dialog;
+private slots:
+    void changeTheme(QString theme);
+protected:
+    virtual void mousePressEvent(QMouseEvent *ev);
+};
+
 class GeneralChatWidget : public QWidget
 {
     Q_OBJECT
 private:
     chatTextBrowser *m_textBrowser;
-    QLabel *m_theme;
+    ThemeLabel *m_theme;
     QLabel *m_label;
     UserListWidget *m_userList;
     QStringList *m_users;
