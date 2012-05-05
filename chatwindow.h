@@ -7,6 +7,7 @@
 #include "ChatClient.h"
 #include "RegisterBot.h"
 #include "ListOfChannels.h"
+#include "ChatWidgets.h"
 
 
 namespace Ui {

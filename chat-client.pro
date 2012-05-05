@@ -19,7 +19,8 @@ SOURCES +=  main.cpp\
     ListOfChannels.cpp \
     ConnectionProperties.cpp \
     RegisterBot.cpp \
-    createchanneldialog.cpp
+    createchanneldialog.cpp \
+    ChatWidgets.cpp
 
 HEADERS  += chatwindow.h \
             ChatClient.h \
@@ -29,7 +30,8 @@ HEADERS  += chatwindow.h \
     ListOfChannels.h \
     ConnectionProperties.h \
     RegisterBot.h \
-    createchanneldialog.h
+    createchanneldialog.h \
+    ChatWidgets.h
 
 FORMS    += chatwindow.ui \
     ChatAuthWindow.ui \

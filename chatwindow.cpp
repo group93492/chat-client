@@ -8,6 +8,14 @@ ChatWindow::ChatWindow(QWidget *parent) :
     ui(new Ui::ChatWindow)
 {
     ui->setupUi(this);
+    //before testing need delete!
+    GeneralChatWidget *widget = new GeneralChatWidget();
+    ui->tabWidget->currentWidget()->setLayout(new QHBoxLayout);
+    widget->setParent(ui->tabWidget->currentWidget());
+    ui->tabWidget->currentWidget()->layout()->addWidget(widget);
+    //
+    //
+    //
     setWindowIcon(QIcon("icon.png"));
     connect(ui->postButton, SIGNAL(clicked()), this, SLOT(postMessage()));
     connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
