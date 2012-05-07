@@ -24,6 +24,8 @@ GeneralChatWidget::GeneralChatWidget(QWidget *parent) :
     this->setLayout(generalLayout);
     connect(m_userList, SIGNAL(onUserInformationClicked(QString)), this, SLOT(replyUserInformationClicked(QString)));
     connect(m_userList, SIGNAL(onPrivateMessageClicked(QString)), this, SLOT(replyPrivateMessageClicked(QString)));
+    connect(m_textBrowser, SIGNAL(onNickClicked(QString)), this, SLOT(replyNickClicked(QString)));
+    connect(m_textBrowser, SIGNAL(lastMessage(QString)), this, SLOT(replyLastMessage(QString)));
 }
 
 void GeneralChatWidget::setUserList(QStringList list)
@@ -69,6 +71,16 @@ void GeneralChatWidget::replyUserInformationClicked(QString nick)
 void GeneralChatWidget::replyPrivateMessageClicked(QString nick)
 {
     emit onPrivateMessageClicked(nick);
+}
+
+void GeneralChatWidget::replyNickClicked(QString nick)
+{
+    emit onNickClicked(nick);
+}
+
+void GeneralChatWidget::replyLastMessage(QString message)
+{
+    emit lastMessage(message);
 }
 
 UserListWidget::UserListWidget(QWidget *parent, QStringList *list) :
@@ -131,11 +143,18 @@ ChatTabWidget::ChatTabWidget(QWidget *parent) :
     joinChannel("main");
 }
 
+QString ChatTabWidget::currentChannel()
+{
+    return tabText(currentIndex());
+}
+
 void ChatTabWidget::joinChannel(QString name)
 {
     GeneralChatWidget *channel = new GeneralChatWidget(this);
     connect(channel, SIGNAL(onPrivateMessageClicked(QString)), this, SLOT(replyPrivateMessageClicked(QString)));
     connect(channel, SIGNAL(onUserInformationClicked(QString)), this, SLOT(replyUserInformationClicked(QString)));
+    connect(channel, SIGNAL(onNickClicked(QString)), this, SLOT(replyNickClicked(QString)));
+    connect(channel, SIGNAL(lastMessage(QString)), this, SLOT(replyLastMessage(QString)));
     m_channels.insert(name, channel);
     addTab(channel, m_channelIcon, name);
 }
@@ -197,6 +216,13 @@ void ChatTabWidget::setUserStatus(QString nick, QString status)
         it.value()->setUserStatus(nick, status);
 }
 
+void ChatTabWidget::setChannelsList(QMap<QString, QString> list)
+{
+    QMap<QString, QString>::iterator channel = list.begin();
+    for(;channel != list.end(); ++channel)
+        joinChannel(channel.key());
+}
+
 void ChatTabWidget::tabCloseResult(int index)
 {
     if(tabText(index) != "main")
@@ -227,6 +253,16 @@ void ChatTabWidget::replyUserInformationClicked(QString nick)
 void ChatTabWidget::replyPrivateMessageClicked(QString nick)
 {
     emit onPrivateMessageClicked(nick);
+}
+
+void ChatTabWidget::replyNickClicked(QString nick)
+{
+    emit onNickClicked(nick);
+}
+
+void ChatTabWidget::replyLastMessage(QString message)
+{
+    emit lastMessage(message + "> ");
 }
 
 

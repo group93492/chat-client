@@ -53,11 +53,15 @@ private:
 private slots:
     void replyUserInformationClicked(QString nick);
     void replyPrivateMessageClicked(QString nick);
+    void replyNickClicked(QString nick);
+    void replyLastMessage(QString message);
 public:
     explicit GeneralChatWidget(QWidget *parent = 0);
 signals:
     void onUserInformationClicked(QString nick);
     void onPrivateMessageClicked(QString nick);
+    void onNickClicked(QString nick);
+    void lastMessage(QString message);
 public slots:
     void setUserList(QStringList list);
     void setUserStatus(QString nick, QString status);
@@ -81,22 +85,28 @@ private slots:
     void currentChangedHander(int index);
     void replyUserInformationClicked(QString nick);
     void replyPrivateMessageClicked(QString nick);
+    void replyNickClicked(QString nick);
+    void replyLastMessage(QString message);
 public:
     explicit ChatTabWidget(QWidget *parent = 0);
+    QString currentChannel();
 public slots:
-    void joinChannel(QString name);
-    void joinPrivateChannel(QString name);
     void appendMessage(QString channelname, QString nick, QString message);
     void appendSystemMessage(QString channelname, QString message);
-    void setUserList(QString channelname, QStringList list);
     void changeTheme(QString channelname, QString theme);
+    void setUserList(QString channelname, QStringList list);
     void setUserStatus(QString nick, QString status);
+    void setChannelsList(QMap<QString, QString> list);
+    void joinChannel(QString name);
+    void joinPrivateChannel(QString name);
 signals:
     void leaveChannel(QString channelname);
     void userInfoRequest(QString nick);
     void themeChanged(QString channelname, QString theme);
     void onUserInformationClicked(QString nick);
     void onPrivateMessageClicked(QString nick);
+    void onNickClicked(QString nick);
+    void lastMessage(QString message);
 };
 
 #endif // GENERALCHATWIDGET_H
