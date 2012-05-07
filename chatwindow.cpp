@@ -9,14 +9,8 @@ ChatWindow::ChatWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     //before testing need delete!
-    GeneralChatWidget *widget = new GeneralChatWidget();
-    ui->tabWidget->currentWidget()->setLayout(new QHBoxLayout);
-    widget->setParent(ui->tabWidget->currentWidget());
-    ui->tabWidget->currentWidget()->layout()->addWidget(widget);
-    QStringList List;
-    List << "aaa" << "bbb";
-    widget->setUserList(List);
-
+    ChatTabWidget *widget = new ChatTabWidget();
+    ui->horizontalLayout->addWidget(widget);
     //
     //
     //
@@ -34,7 +28,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(m_client, SIGNAL(userList(QString,QStringList)), this, SLOT(setChannelUsers(QString,QStringList)));
     connect(m_client, SIGNAL(channelSystemMsg(QString,QString)), this, SLOT(addChannelSystemMessage(QString,QString)));
     connect(this, SIGNAL(sendMessage(const QString&, const QString&)), m_client, SLOT(sendChannelMessage(const QString&, const QString&)));
-    connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(removeChannelTab(int)));
+    //connect(ui->tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(removeChannelTab(int)));
     connect(m_smiles, SIGNAL(smileClicked(QString)), SLOT(insertText(QString)));
     connect(ui->allChannelsPushButton, SIGNAL(clicked()), m_channelListDialog, SLOT(show()));
     connect(m_channelListDialog, SIGNAL(requestJoinChannel(QString)), m_client, SLOT(joinChannelRequest(QString)));
@@ -65,17 +59,17 @@ void ChatWindow::connectToServer(QString username, QString password, QTcpSocket 
     m_client->start(socket);
     //
 
-    chatTextBrowser *textBrowser = new chatTextBrowser(ui->tabWidget->currentWidget(), m_smiles->getSmiles());
-    textBrowser->setOwnerNick(username);
+    //chatTextBrowser *textBrowser = new chatTextBrowser(ui->tabWidget->currentWidget(), m_smiles->getSmiles());
+    //textBrowser->setOwnerNick(username);
     QHBoxLayout *layout = new QHBoxLayout();
     QListWidget *listwidget = new QListWidget();
-    layout->addWidget(textBrowser, 3);
+    //layout->addWidget(textBrowser, 3);
     layout->addWidget(listwidget,1);
-    m_textBrowsersMap.insert("main", textBrowser);
+    //m_textBrowsersMap.insert("main", textBrowser);
     m_listWidgetsMap.insert("main", listwidget);
-    ui->tabWidget->currentWidget()->setLayout(layout);
-    connect(textBrowser, SIGNAL(lastMessage(QString)), this, SLOT(lastMessageEdit(QString)));
-    connect(textBrowser, SIGNAL(onNickClicked(QString)), SLOT(insertText(QString)));
+    //ui->tabWidget->currentWidget()->setLayout(layout);
+    //connect(textBrowser, SIGNAL(lastMessage(QString)), this, SLOT(lastMessageEdit(QString)));
+    //connect(textBrowser, SIGNAL(onNickClicked(QString)), SLOT(insertText(QString)));
 
     //
     this->show();
@@ -99,28 +93,28 @@ void ChatWindow::clientAuthorized()
 void ChatWindow::postMessage()
 {
     QString body = ui->messageEdit->text();
-    QString receiver = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
-    if (receiver.isEmpty())
-        receiver = "main";
-    emit sendMessage(receiver, body);
+    //QString receiver = ui->tabWidget->tabText(ui->tabWidget->currentIndex());
+    //if (receiver.isEmpty())
+        //receiver = "main";
+    //emit sendMessage(receiver, body);
     ui->messageEdit->clear();
 }
 
 void ChatWindow::addChannelTab(QString name)
 {
-    QWidget *widget = new QWidget(ui->tabWidget);
-    chatTextBrowser *textBrowser = new chatTextBrowser(ui->tabWidget->currentWidget(), m_smiles->getSmiles());
-    textBrowser->setOwnerNick(m_client->username());
+    //QWidget *widget = new QWidget(ui->tabWidget);
+    //chatTextBrowser *textBrowser = new chatTextBrowser(ui->tabWidget->currentWidget(), m_smiles->getSmiles());
+    //textBrowser->setOwnerNick(m_client->username());
     QHBoxLayout *layout = new QHBoxLayout();
     QListWidget *listWidget = new QListWidget();
-    layout->addWidget(textBrowser, 3);
+    //layout->addWidget(textBrowser, 3);
     layout->addWidget(listWidget,1);
-    widget->setLayout(layout);
-    ui->tabWidget->addTab(widget, name);
-    m_textBrowsersMap.insert(name, textBrowser);
+    //widget->setLayout(layout);
+    //ui->tabWidget->addTab(widget, name);
+    //m_textBrowsersMap.insert(name, textBrowser);
     m_listWidgetsMap.insert(name, listWidget);
-    connect(textBrowser, SIGNAL(lastMessage(QString)), this, SLOT(lastMessageEdit(QString)));
-    connect(textBrowser, SIGNAL(onNickClicked(QString)), SLOT(insertText(QString)));
+    //connect(textBrowser, SIGNAL(lastMessage(QString)), this, SLOT(lastMessageEdit(QString)));
+    //connect(textBrowser, SIGNAL(onNickClicked(QString)), SLOT(insertText(QString)));
 }
 
 void ChatWindow::removeChannelTab(int index)
@@ -132,9 +126,9 @@ void ChatWindow::removeChannelTab(int index)
                                   "Are you sure you want to leave this channel?",
                                   QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
             return;
-        m_client->leaveChannel(ui->tabWidget->tabText(index));
-        m_textBrowsersMap.remove(ui->tabWidget->tabText(index));
-        ui->tabWidget->removeTab(index);
+        //m_client->leaveChannel(ui->tabWidget->tabText(index));
+        //m_textBrowsersMap.remove(ui->tabWidget->tabText(index));
+        //ui->tabWidget->removeTab(index);
     }
 }
 

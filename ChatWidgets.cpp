@@ -22,6 +22,8 @@ GeneralChatWidget::GeneralChatWidget(QWidget *parent) :
     generalLayout->addLayout(layoutOne);
     generalLayout->addLayout(layoutTwo, 10);
     this->setLayout(generalLayout);
+    connect(m_userList, SIGNAL(onUserInformationClicked(QString)), this, SLOT(replyUserInformationClicked(QString)));
+    connect(m_userList, SIGNAL(onPrivateMessageClicked(QString)), this, SLOT(replyPrivateMessageClicked(QString)));
 }
 
 void GeneralChatWidget::setUserList(QStringList list)
@@ -47,6 +49,26 @@ void GeneralChatWidget::setUserStatus(QString nick, QString status)
 void GeneralChatWidget::appendMessage(QString nick, QString msg)
 {
     m_textBrowser->appendMessage(nick, msg);
+}
+
+void GeneralChatWidget::appendSystemMessage(QString msg)
+{
+    m_textBrowser->appendSystemMessage(msg);
+}
+
+void GeneralChatWidget::setChannelTheme(QString theme)
+{
+    m_theme->changeTheme(theme);
+}
+
+void GeneralChatWidget::replyUserInformationClicked(QString nick)
+{
+    emit onUserInformationClicked(nick);
+}
+
+void GeneralChatWidget::replyPrivateMessageClicked(QString nick)
+{
+    emit onPrivateMessageClicked(nick);
 }
 
 UserListWidget::UserListWidget(QWidget *parent, QStringList *list) :
@@ -87,7 +109,8 @@ ThemeLabel::ThemeLabel(QWidget *parent) :
 void ThemeLabel::changeTheme(QString theme)
 {
     setText(theme);
-    m_dialog.hide();
+    if(!m_dialog.isHidden())
+        m_dialog.hide();
 }
 
 void ThemeLabel::mousePressEvent(QMouseEvent *ev)
@@ -99,3 +122,111 @@ void ThemeLabel::mousePressEvent(QMouseEvent *ev)
         connect(&m_dialog, SIGNAL(onOkButtonClicked(QString)), this, SLOT(changeTheme(QString)));
     }
 }
+
+ChatTabWidget::ChatTabWidget(QWidget *parent) :
+    QTabWidget(parent)
+{
+    setTabsClosable(true);
+    connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseResult(int)));
+    joinChannel("main");
+}
+
+void ChatTabWidget::joinChannel(QString name)
+{
+    GeneralChatWidget *channel = new GeneralChatWidget(this);
+    connect(channel, SIGNAL(onPrivateMessageClicked(QString)), this, SLOT(replyPrivateMessageClicked(QString)));
+    connect(channel, SIGNAL(onUserInformationClicked(QString)), this, SLOT(replyUserInformationClicked(QString)));
+    m_channels.insert(name, channel);
+    addTab(channel, m_channelIcon, name);
+}
+
+void ChatTabWidget::joinPrivateChannel(QString name)
+{
+    GeneralChatWidget *channel = new GeneralChatWidget(this);
+    m_privateChannels.insert(name, channel);
+    addTab(channel, m_PMIcon, name);
+}
+
+void ChatTabWidget::appendMessage(QString channelname, QString nick, QString message)
+{
+    if(m_channels.contains(channelname))
+    {
+        m_channels.value(channelname)->appendMessage(nick, message);
+        if(tabText(currentIndex()) != channelname)
+            setTabIcon(indexOf(m_channels.value(channelname)), m_newMsgIcon);
+    }
+    else
+    {
+        m_privateChannels.value(channelname)->appendMessage(nick, message);
+        if(tabText(currentIndex()) != channelname)
+            setTabIcon(indexOf(m_privateChannels.value(channelname)), m_newMsgPMIcon);
+    }
+}
+
+void ChatTabWidget::appendSystemMessage(QString channelname, QString message)
+{
+    if(m_channels.contains(channelname))
+        m_channels.value(channelname)->appendSystemMessage(message);
+    else
+        m_privateChannels.value(channelname)->appendSystemMessage(message);
+}
+
+void ChatTabWidget::setUserList(QString channelname, QStringList list)
+{
+    if(m_channels.contains(channelname))
+        m_channels.value(channelname)->setUserList(list);
+    else
+        m_privateChannels.value(channelname)->setUserList(list);
+}
+
+void ChatTabWidget::changeTheme(QString channelname, QString theme)
+{
+    if(m_channels.contains(channelname))
+        m_channels.value(channelname)->setChannelTheme(theme);
+    else
+        m_privateChannels.value(channelname)->setChannelTheme(theme);
+}
+
+void ChatTabWidget::setUserStatus(QString nick, QString status)
+{
+    QMap<QString, GeneralChatWidget*>::iterator i = m_channels.begin();
+    for(; i != m_channels.end(); ++i)
+        i.value()->setUserStatus(nick, status);
+    QMap<QString, GeneralChatWidget*>::iterator it = m_privateChannels.begin();
+    for(; it != m_privateChannels.end(); ++it)
+        it.value()->setUserStatus(nick, status);
+}
+
+void ChatTabWidget::tabCloseResult(int index)
+{
+    if(tabText(index) != "main")
+    {
+        QString channelName = tabText(index);
+        emit leaveChannel(channelName);
+        if(m_channels.contains(channelName))
+            m_channels.remove(channelName);
+        else
+            m_privateChannels.remove(channelName);
+        removeTab(index);
+    }
+}
+
+void ChatTabWidget::currentChangedHander(int index)
+{
+    if(m_channels.contains(tabText(index)))
+        setTabIcon(index, m_channelIcon);
+    else
+        setTabIcon(index, m_PMIcon);
+}
+
+void ChatTabWidget::replyUserInformationClicked(QString nick)
+{
+    emit onUserInformationClicked(nick);
+}
+
+void ChatTabWidget::replyPrivateMessageClicked(QString nick)
+{
+    emit onPrivateMessageClicked(nick);
+}
+
+
