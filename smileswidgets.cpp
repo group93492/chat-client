@@ -1,4 +1,5 @@
 #include "smileswidgets.h"
+#include <QDebug>
 
 chatTextBrowser::chatTextBrowser(QWidget *parent, QMap<QString, QString> *smilesMap) :
     QTextBrowser(parent)

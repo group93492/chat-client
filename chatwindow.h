@@ -26,9 +26,8 @@ private:
     Ui::ChatWindow *ui;
     ChatClient *m_client;
     smilesWidget *m_smiles;
-    QMap<QString, chatTextBrowser*> m_textBrowsersMap;
-    QMap<QString, QListWidget*> m_listWidgetsMap;
     ListOfChannels *m_channelListDialog;
+    ChatTabWidget *m_tabWidget;
     void setMyChannelList(QMap<QString,QString> list);
 
 protected:
@@ -41,17 +40,9 @@ signals:
     void replyJoinRequestResult(QString, bool);
 
 private slots:
-    void clientError(const QString &);
-    void displayMessage(const QString &msgText);
-    void clientAuthorized();
     void postMessage();
-    void addChannelTab(QString name);
-    void removeChannelTab(int index);
-    void addChannelMessage(QString channel, QString nick, QString message);
-    void addChannelSystemMessage(QString channel, QString message);
+    void setText(QString text);
     void insertText(QString smileName);
-    void lastMessageEdit(QString message);
-    void setChannelUsers(QString channelname, QStringList list);
     void processChannelList(QMap<QString,QString> list, ChatClient::ChannelListType type);
     void getChannelJoinResult(QString channelName, bool result);
 

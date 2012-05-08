@@ -56,7 +56,7 @@ private slots:
     void replyNickClicked(QString nick);
     void replyLastMessage(QString message);
 public:
-    explicit GeneralChatWidget(QWidget *parent = 0);
+    explicit GeneralChatWidget(QWidget *parent = 0, QMap<QString, QString> *smilesMap = NULL, QString nick = "");
 signals:
     void onUserInformationClicked(QString nick);
     void onPrivateMessageClicked(QString nick);
@@ -76,6 +76,8 @@ class ChatTabWidget : public QTabWidget
 private:
     QMap<QString, GeneralChatWidget *> m_channels;
     QMap<QString, GeneralChatWidget *> m_privateChannels;
+    QMap<QString, QString> *m_smilesMap;
+    QString m_ownerNick;
     QIcon m_channelIcon;
     QIcon m_PMIcon;
     QIcon m_newMsgIcon;
@@ -89,7 +91,9 @@ private slots:
     void replyLastMessage(QString message);
 public:
     explicit ChatTabWidget(QWidget *parent = 0);
+    explicit ChatTabWidget(QWidget *parent = 0, QMap<QString, QString> *smilesMap = NULL);
     QString currentChannel();
+    void setOwnerNick(QString nick);
 public slots:
     void appendMessage(QString channelname, QString nick, QString message);
     void appendSystemMessage(QString channelname, QString message);

@@ -1,17 +1,18 @@
 #include "ChatWidgets.h"
 #include <QDebug>
 
-GeneralChatWidget::GeneralChatWidget(QWidget *parent) :
+GeneralChatWidget::GeneralChatWidget(QWidget *parent, QMap<QString, QString> *smilesMap, QString nick) :
     QWidget(parent)
 {
     m_users = new QStringList;
     m_theme = new ThemeLabel(this);
-    m_textBrowser = new chatTextBrowser(this);
+    m_textBrowser = new chatTextBrowser(this, smilesMap);
     m_userList = new UserListWidget(this, m_users);
     m_label = new QLabel("Users in channel: " + QString::number(m_userList->count()), this);
     m_theme->setFrameShape(QFrame::StyledPanel);
     m_theme->setFrameShadow(QFrame::Raised);
     m_theme->setAlignment(Qt::AlignHCenter);
+    m_textBrowser->setOwnerNick(nick);
     QVBoxLayout *generalLayout = new QVBoxLayout();
     QHBoxLayout *layoutOne = new QHBoxLayout();
     QHBoxLayout *layoutTwo = new QHBoxLayout();
@@ -33,6 +34,7 @@ void GeneralChatWidget::setUserList(QStringList list)
     list.sort();
     m_users->clear();
     m_users->append(list);
+    m_userList->clear();
     m_userList->addItems(list);
     m_label->setText("Users in channel: " + QString::number(m_users->count()));
 }
@@ -140,7 +142,13 @@ ChatTabWidget::ChatTabWidget(QWidget *parent) :
 {
     setTabsClosable(true);
     connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseResult(int)));
-    joinChannel("main");
+}
+
+ChatTabWidget::ChatTabWidget(QWidget *parent, QMap<QString, QString> *smilesMap)
+{
+    m_smilesMap = smilesMap;
+    setTabsClosable(true);
+    connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseResult(int)));
 }
 
 QString ChatTabWidget::currentChannel()
@@ -148,9 +156,14 @@ QString ChatTabWidget::currentChannel()
     return tabText(currentIndex());
 }
 
+void ChatTabWidget::setOwnerNick(QString nick)
+{
+    m_ownerNick = nick;
+}
+
 void ChatTabWidget::joinChannel(QString name)
 {
-    GeneralChatWidget *channel = new GeneralChatWidget(this);
+    GeneralChatWidget *channel = new GeneralChatWidget(this, m_smilesMap, m_ownerNick);
     connect(channel, SIGNAL(onPrivateMessageClicked(QString)), this, SLOT(replyPrivateMessageClicked(QString)));
     connect(channel, SIGNAL(onUserInformationClicked(QString)), this, SLOT(replyUserInformationClicked(QString)));
     connect(channel, SIGNAL(onNickClicked(QString)), this, SLOT(replyNickClicked(QString)));
@@ -161,7 +174,11 @@ void ChatTabWidget::joinChannel(QString name)
 
 void ChatTabWidget::joinPrivateChannel(QString name)
 {
-    GeneralChatWidget *channel = new GeneralChatWidget(this);
+    GeneralChatWidget *channel = new GeneralChatWidget(this, m_smilesMap);
+    connect(channel, SIGNAL(onPrivateMessageClicked(QString)), this, SLOT(replyPrivateMessageClicked(QString)));
+    connect(channel, SIGNAL(onUserInformationClicked(QString)), this, SLOT(replyUserInformationClicked(QString)));
+    connect(channel, SIGNAL(onNickClicked(QString)), this, SLOT(replyNickClicked(QString)));
+    connect(channel, SIGNAL(lastMessage(QString)), this, SLOT(replyLastMessage(QString)));
     m_privateChannels.insert(name, channel);
     addTab(channel, m_PMIcon, name);
 }
@@ -220,7 +237,8 @@ void ChatTabWidget::setChannelsList(QMap<QString, QString> list)
 {
     QMap<QString, QString>::iterator channel = list.begin();
     for(;channel != list.end(); ++channel)
-        joinChannel(channel.key());
+        if(!m_channels.contains(channel.key()) && !m_privateChannels.contains(channel.key()))
+            joinChannel(channel.key());
 }
 
 void ChatTabWidget::tabCloseResult(int index)
@@ -257,12 +275,12 @@ void ChatTabWidget::replyPrivateMessageClicked(QString nick)
 
 void ChatTabWidget::replyNickClicked(QString nick)
 {
-    emit onNickClicked(nick);
+    emit onNickClicked(nick + "> ");
 }
 
 void ChatTabWidget::replyLastMessage(QString message)
 {
-    emit lastMessage(message + "> ");
+    emit lastMessage(message);
 }
 
 
