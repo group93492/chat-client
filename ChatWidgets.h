@@ -33,12 +33,15 @@ class ThemeLabel : public QLabel
     Q_OBJECT
 public:
     explicit ThemeLabel(QWidget *parent = 0);
+    void setTheme(QString theme);
 private:
     ChannelThemeDialog m_dialog;
-public slots:
+private slots:
     void changeTheme(QString theme);
 protected:
     virtual void mousePressEvent(QMouseEvent *ev);
+signals:
+    void themeChanged(QString theme);
 };
 
 class GeneralChatWidget : public QWidget
@@ -55,6 +58,7 @@ private slots:
     void replyPrivateMessageClicked(QString nick);
     void replyNickClicked(QString nick);
     void replyLastMessage(QString message);
+    void replyThemeChanged(QString theme);
 public:
     explicit GeneralChatWidget(QWidget *parent = 0, QMap<QString, QString> *smilesMap = NULL, QString nick = "");
 signals:
@@ -62,6 +66,7 @@ signals:
     void onPrivateMessageClicked(QString nick);
     void onNickClicked(QString nick);
     void lastMessage(QString message);
+    void themeChanged(QString theme);
 public slots:
     void setUserList(QStringList list);
     void setUserStatus(QString nick, QString status);
@@ -89,6 +94,7 @@ private slots:
     void replyPrivateMessageClicked(QString nick);
     void replyNickClicked(QString nick);
     void replyLastMessage(QString message);
+    void replyThemeChanged(QString theme);
 public:
     explicit ChatTabWidget(QWidget *parent = 0);
     explicit ChatTabWidget(QWidget *parent = 0, QMap<QString, QString> *smilesMap = NULL);

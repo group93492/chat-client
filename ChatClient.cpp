@@ -124,6 +124,13 @@ void ChatClient::clientGotNewMessage()
                 delete msg;
                 break;
             }
+        case cmtChannelThemeChanged:
+            {
+                ChannelThemeChanged *msg = new ChannelThemeChanged(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
@@ -205,6 +212,16 @@ void ChatClient::createChannelRequest(QString name, QString topic, QString descr
     delete msg;
 }
 
+void ChatClient::changeChannelTheme(QString channel, QString theme)
+{
+    ChannelThemeChanged *msg = new ChannelThemeChanged();
+    msg->channel = channel;
+    msg->theme = theme;
+    msg->username = m_username;
+    sendMessageToServer(msg);
+    delete msg;
+}
+
 void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 {
     QByteArray arrBlock;
@@ -267,5 +284,12 @@ void ChatClient::processMessage(const ChannelCreateResult *msg)
         emit channelCreateResult("Channel created!");
     else
         emit channelCreateResult(msg->denialReason);
+}
+
+void ChatClient::processMessage(const ChannelThemeChanged *msg)
+{
+    QString channel = msg->channel;
+    QString theme = msg->theme;
+    emit channelThemeChange(channel, theme);
 }
 

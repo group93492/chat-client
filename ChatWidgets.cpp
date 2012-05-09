@@ -27,6 +27,7 @@ GeneralChatWidget::GeneralChatWidget(QWidget *parent, QMap<QString, QString> *sm
     connect(m_userList, SIGNAL(onPrivateMessageClicked(QString)), this, SLOT(replyPrivateMessageClicked(QString)));
     connect(m_textBrowser, SIGNAL(onNickClicked(QString)), this, SLOT(replyNickClicked(QString)));
     connect(m_textBrowser, SIGNAL(lastMessage(QString)), this, SLOT(replyLastMessage(QString)));
+    connect(m_theme, SIGNAL(themeChanged(QString)), this, SLOT(replyThemeChanged(QString)));
 }
 
 void GeneralChatWidget::setUserList(QStringList list)
@@ -62,7 +63,7 @@ void GeneralChatWidget::appendSystemMessage(QString msg)
 
 void GeneralChatWidget::setChannelTheme(QString theme)
 {
-    m_theme->changeTheme(theme);
+    m_theme->setTheme(theme);
 }
 
 void GeneralChatWidget::replyUserInformationClicked(QString nick)
@@ -83,6 +84,11 @@ void GeneralChatWidget::replyNickClicked(QString nick)
 void GeneralChatWidget::replyLastMessage(QString message)
 {
     emit lastMessage(message);
+}
+
+void GeneralChatWidget::replyThemeChanged(QString theme)
+{
+    emit themeChanged(theme);
 }
 
 UserListWidget::UserListWidget(QWidget *parent, QStringList *list) :
@@ -118,13 +124,20 @@ void UserListWidget::sendPMSignal()
 ThemeLabel::ThemeLabel(QWidget *parent) :
     QLabel(parent)
 {
+    connect(&m_dialog, SIGNAL(onOkButtonClicked(QString)), this, SLOT(changeTheme(QString)));
 }
 
 void ThemeLabel::changeTheme(QString theme)
 {
-    setText(theme);
     if(!m_dialog.isHidden())
         m_dialog.hide();
+    if(this->text() != theme)
+        emit themeChanged(theme);
+}
+
+void ThemeLabel::setTheme(QString theme)
+{
+    setText(theme);
 }
 
 void ThemeLabel::mousePressEvent(QMouseEvent *ev)
@@ -133,7 +146,6 @@ void ThemeLabel::mousePressEvent(QMouseEvent *ev)
     {
         m_dialog.setTheme(this->text());
         m_dialog.show();
-        connect(&m_dialog, SIGNAL(onOkButtonClicked(QString)), this, SLOT(changeTheme(QString)));
     }
 }
 
@@ -168,6 +180,7 @@ void ChatTabWidget::joinChannel(QString name)
     connect(channel, SIGNAL(onUserInformationClicked(QString)), this, SLOT(replyUserInformationClicked(QString)));
     connect(channel, SIGNAL(onNickClicked(QString)), this, SLOT(replyNickClicked(QString)));
     connect(channel, SIGNAL(lastMessage(QString)), this, SLOT(replyLastMessage(QString)));
+    connect(channel, SIGNAL(themeChanged(QString)), this, SLOT(replyThemeChanged(QString)));
     m_channels.insert(name, channel);
     addTab(channel, m_channelIcon, name);
 }
@@ -179,6 +192,7 @@ void ChatTabWidget::joinPrivateChannel(QString name)
     connect(channel, SIGNAL(onUserInformationClicked(QString)), this, SLOT(replyUserInformationClicked(QString)));
     connect(channel, SIGNAL(onNickClicked(QString)), this, SLOT(replyNickClicked(QString)));
     connect(channel, SIGNAL(lastMessage(QString)), this, SLOT(replyLastMessage(QString)));
+    connect(channel, SIGNAL(themeChanged(QString)), this, SLOT(replyThemeChanged(QString)));
     m_privateChannels.insert(name, channel);
     addTab(channel, m_PMIcon, name);
 }
@@ -281,6 +295,11 @@ void ChatTabWidget::replyNickClicked(QString nick)
 void ChatTabWidget::replyLastMessage(QString message)
 {
     emit lastMessage(message);
+}
+
+void ChatTabWidget::replyThemeChanged(QString theme)
+{
+    emit themeChanged(currentChannel(), theme);
 }
 
 
