@@ -14,7 +14,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     m_smiles = new smilesWidget(this);
     m_channelListDialog = new ListOfChannels(this);
     m_tabWidget = new ChatTabWidget(this, m_smiles->getSmiles());
-    ui->horizontalLayout->addWidget(m_tabWidget);
+    ui->chatLayout->addWidget(m_tabWidget);
     //connect part
     connect(m_client, SIGNAL(channelMsg(QString,QString,QString)), m_tabWidget, SLOT(appendMessage(QString,QString,QString)));
     connect(m_client, SIGNAL(channelSystemMsg(QString,QString)), m_tabWidget, SLOT(appendSystemMessage(QString,QString)));
@@ -51,6 +51,7 @@ void ChatWindow::closeEvent(QCloseEvent *event)
 
 void ChatWindow::connectToServer(QString username, QString password, QTcpSocket *socket)
 {
+    setWindowTitle("Chat - " + username);
     m_tabWidget->setOwnerNick(username);
     m_client->setUserInfo(username, password);
     m_client->start(socket);
