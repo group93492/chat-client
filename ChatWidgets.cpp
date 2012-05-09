@@ -257,6 +257,10 @@ void ChatTabWidget::setChannelsList(QMap<QString, QString> list)
 
 void ChatTabWidget::tabCloseResult(int index)
 {
+    if (QMessageBox::question(this, "Exit confirmation.",
+                              "Are you sure you want to leave this channel?",
+                              QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+        return;
     if(tabText(index) != "main")
     {
         QString channelName = tabText(index);

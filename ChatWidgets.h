@@ -8,6 +8,7 @@
 #include <QHBoxLayout>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QMessageBox>
 #include "smileswidgets.h"
 #include "ChannelThemeDialog.h"
 
