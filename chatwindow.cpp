@@ -33,6 +33,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(m_client, SIGNAL(channelCreateResult(QString)), m_channelListDialog, SLOT(getChannelCreateResult(QString)));
     connect(m_client, SIGNAL(userList(QString,QStringList)), m_tabWidget, SLOT(setUserList(QString,QStringList)));
     connect(m_client, SIGNAL(channelThemeChange(QString,QString)), m_tabWidget, SLOT(changeTheme(QString,QString)));
+    connect(m_client, SIGNAL(clientStatusChanged(QString,QString)), m_tabWidget, SLOT(setUserStatus(QString,QString)));
     //connect m_tabWidget
     connect(m_tabWidget, SIGNAL(lastMessage(QString)), this, SLOT(setText(QString)));
     connect(m_tabWidget, SIGNAL(onNickClicked(QString)), this, SLOT(insertText(QString)));
@@ -44,12 +45,13 @@ ChatWindow::ChatWindow(QWidget *parent) :
     //connect mainwindow
     connect(this, SIGNAL(sendMessage(const QString&, const QString&)), m_client, SLOT(sendChannelMessage(const QString&, const QString&)));
     connect(this, SIGNAL(sendAllChannelsList(QMap<QString,QString>)), m_channelListDialog, SLOT(setAllChannelsList(QMap<QString,QString>)));
+    connect(this, SIGNAL(statusChanged(QString)), m_client, SLOT(changeStatus(QString)));
     //connect widgets of mainwindow
     connect(ui->smilesPushButton, SIGNAL(clicked()), m_smiles, SLOT(show()));
     connect(ui->allChannelsPushButton, SIGNAL(clicked()), m_channelListDialog, SLOT(show()));
     connect(ui->postButton, SIGNAL(clicked()), this, SLOT(postMessage()));
     connect(ui->messageEdit, SIGNAL(returnPressed()), this, SLOT(postMessage()));
-    connect(ui->statusComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(onChangeStatus(QString)));
+    connect(ui->statusComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onChangeStatus(int)));
     connect(&m_statusDialog, SIGNAL(statusChanged(QString)), this, SLOT(onChangeStatus(QString)));
     connect(m_smiles, SIGNAL(smileClicked(QString)), SLOT(insertText(QString)));
 
@@ -113,21 +115,36 @@ void ChatWindow::getChannelJoinResult(QString channelName, bool result)
 
 void ChatWindow::onChangeStatus(QString status)
 {
-    if(status == "Online")
-        emit statusChanged("");
-    if(status == "Other...")
-    {
-        m_statusDialog.show();
-    }
-    else
-    {
-        for(quint8 i = 0; i < ui->statusComboBox->count(); i++)
-            if(ui->statusComboBox->itemText(i) == status)
-                return;
-        ui->statusComboBox->addItem(status);
-        ui->statusComboBox->setCurrentIndex(ui->statusComboBox->count() - 1);
-        emit statusChanged(status);
-    }
-
+    for(quint8 i = 0; i < ui->statusComboBox->count() + 1; i++) //because we have two separators
+        if(ui->statusComboBox->itemText(i) == status)
+        {
+            ui->statusComboBox->setCurrentIndex(i);
+            emit statusChanged(status);
+            return;
+        }
+    ui->statusComboBox->addItem(status);
+    ui->statusComboBox->setCurrentIndex(ui->statusComboBox->count() - 1);
+    emit statusChanged(status);
 }
 
+void ChatWindow::onChangeStatus(int index)
+{
+    switch(index)
+    {
+    case 0:
+        {
+            emit statusChanged("");
+            break;
+        }
+    case 4:
+        {
+            m_statusDialog.show();
+            break;
+        }
+    default:
+        {
+            emit statusChanged(ui->statusComboBox->currentText());
+            break;
+        }
+    }
+}

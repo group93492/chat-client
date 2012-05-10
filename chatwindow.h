@@ -48,6 +48,7 @@ private slots:
     void processChannelList(QMap<QString,QString> list, ChatClient::ChannelListType type);
     void getChannelJoinResult(QString channelName, bool result);
     void onChangeStatus(QString status);
+    void onChangeStatus(int index);
 
 public slots:
     void connectToServer(QString username, QString password, QTcpSocket *socket);

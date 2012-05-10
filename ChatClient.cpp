@@ -131,6 +131,13 @@ void ChatClient::clientGotNewMessage()
                 delete msg;
                 break;
             }
+        case cmtClientStatusChanged:
+            {
+                ClientStatusChanged *msg = new ClientStatusChanged(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
@@ -222,6 +229,15 @@ void ChatClient::changeChannelTheme(QString channel, QString theme)
     delete msg;
 }
 
+void ChatClient::changeStatus(QString status)
+{
+    ClientStatusChanged *msg = new ClientStatusChanged();
+    msg->username = m_username;
+    msg->status = status;
+    sendMessageToServer(msg);
+    delete msg;
+}
+
 void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 {
     QByteArray arrBlock;
@@ -291,5 +307,12 @@ void ChatClient::processMessage(const ChannelThemeChanged *msg)
     QString channel = msg->channel;
     QString theme = msg->theme;
     emit channelThemeChange(channel, theme);
+}
+
+void ChatClient::processMessage(const ClientStatusChanged *msg)
+{
+    QString status = msg->status;
+    QString username = msg->username;
+    emit clientStatusChanged(username, status);
 }
 
