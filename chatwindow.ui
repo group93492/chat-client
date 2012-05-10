@@ -60,14 +60,14 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="statusLabel">
           <property name="text">
            <string>Your status:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox"/>
+         <widget class="QComboBox" name="statusComboBox"/>
         </item>
        </layout>
       </item>

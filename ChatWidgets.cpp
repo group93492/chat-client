@@ -124,6 +124,7 @@ void UserListWidget::sendPMSignal()
 ThemeLabel::ThemeLabel(QWidget *parent) :
     QLabel(parent)
 {
+    m_dialog.setModal(true);
     connect(&m_dialog, SIGNAL(onOkButtonClicked(QString)), this, SLOT(changeTheme(QString)));
 }
 

@@ -22,7 +22,8 @@ SOURCES +=  main.cpp\
     createchanneldialog.cpp \
     ChatWidgets.cpp \
     ChannelThemeDialog.cpp \
-    UserInfoDialog.cpp
+    UserInfoDialog.cpp \
+    StatusDialog.cpp
 
 HEADERS  += chatwindow.h \
             ChatClient.h \
@@ -35,7 +36,8 @@ HEADERS  += chatwindow.h \
     createchanneldialog.h \
     ChatWidgets.h \
     ChannelThemeDialog.h \
-    UserInfoDialog.h
+    UserInfoDialog.h \
+    StatusDialog.h
 
 FORMS    += chatwindow.ui \
     ChatAuthWindow.ui \
@@ -43,4 +45,5 @@ FORMS    += chatwindow.ui \
     ListOfChannels.ui \
     createchanneldialog.ui \
     ChannelThemeDialog.ui \
-    UserInfoDialog.ui
+    UserInfoDialog.ui \
+    StatusDialog.ui

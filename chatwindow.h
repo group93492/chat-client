@@ -8,7 +8,7 @@
 #include "RegisterBot.h"
 #include "ListOfChannels.h"
 #include "ChatWidgets.h"
-
+#include "StatusDialog.h"
 
 namespace Ui {
 class ChatWindow;
@@ -28,6 +28,7 @@ private:
     smilesWidget *m_smiles;
     ListOfChannels *m_channelListDialog;
     ChatTabWidget *m_tabWidget;
+    StatusDialog m_statusDialog;
     void setMyChannelList(QMap<QString,QString> list);
 
 protected:
@@ -38,6 +39,7 @@ signals:
     void sendAllChannelsList(QMap<QString,QString>);
     void requestUserList(QString);
     void replyJoinRequestResult(QString, bool);
+    void statusChanged(QString status);
 
 private slots:
     void postMessage();
@@ -45,6 +47,7 @@ private slots:
     void insertText(QString smileName);
     void processChannelList(QMap<QString,QString> list, ChatClient::ChannelListType type);
     void getChannelJoinResult(QString channelName, bool result);
+    void onChangeStatus(QString status);
 
 public slots:
     void connectToServer(QString username, QString password, QTcpSocket *socket);
