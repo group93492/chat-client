@@ -119,12 +119,10 @@ void ChatWindow::onChangeStatus(QString status)
         if(ui->statusComboBox->itemText(i) == status)
         {
             ui->statusComboBox->setCurrentIndex(i);
-            emit statusChanged(status);
             return;
         }
     ui->statusComboBox->addItem(status);
     ui->statusComboBox->setCurrentIndex(ui->statusComboBox->count() - 1);
-    emit statusChanged(status);
 }
 
 void ChatWindow::onChangeStatus(int index)

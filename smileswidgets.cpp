@@ -9,7 +9,7 @@ chatTextBrowser::chatTextBrowser(QWidget *parent, QMap<QString, QString> *smiles
     m_timePattern = "[hh:mm:ss]";
     m_ownerColor = "red";
     m_ownerNick = "";
-    appendSystemMessage(QString::fromLocal8Bit("Добро пожаловать!"));
+    appendSystemMessage(QString::fromLocal8Bit("Welcome!"));
 }
 
 void chatTextBrowser::setOwnerNick(QString nick)
