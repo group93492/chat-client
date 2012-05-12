@@ -15,6 +15,19 @@ public:
     explicit OwnerProfile(QWidget *parent = 0);
     ~OwnerProfile();
     
+signals:
+    void changePassword(QString oldpass, QString newpass);
+    void changeInfo(QString username, QString info);
+
+private slots:
+    void on_closeButton_clicked();
+    void on_saveButton_clicked();
+    void on_changeButton_clicked();
+
+public slots:
+    void setResult(QString text);
+    void setInfo(QString username, QString info);
+
 private:
     Ui::OwnerProfile *ui;
 };

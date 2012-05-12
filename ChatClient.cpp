@@ -140,7 +140,14 @@ void ChatClient::clientGotNewMessage()
             }
         case cmtUserInfoMessage:
             {
-                UserInfoMessage * msg = new UserInfoMessage(input);
+                UserInfoMessage *msg = new UserInfoMessage(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
+        case cmtPasswordChangeResult:
+            {
+                PasswordChangeResult *msg = new PasswordChangeResult(input);
                 processMessage(msg);
                 delete msg;
                 break;
@@ -253,6 +260,25 @@ void ChatClient::userInfoRequest(QString username)
     delete msg;
 }
 
+void ChatClient::sendOwnerProfile(QString username, QString info)
+{
+    UserInfoChanged *msg = new UserInfoChanged();
+    msg->username = username;
+    msg->info = info;
+    sendMessageToServer(msg);
+    delete msg;
+}
+
+void ChatClient::changePassword(QString oldPass, QString newPass)
+{
+    PasswordChangeRequest *msg = new PasswordChangeRequest();
+    msg->oldPassword = oldPass;
+    msg->newPassword = newPass;
+    msg->username = m_username;
+    sendMessageToServer(msg);
+    delete msg;
+}
+
 void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 {
     QByteArray arrBlock;
@@ -335,6 +361,15 @@ void ChatClient::processMessage(const UserInfoMessage *msg)
 {
     QString username = msg->username;
     QString info = msg->info;
-    emit userInfo(username, info);
+    if(username == m_username)
+        emit ownerInfo(username, info);
+    else
+        emit userInfo(username, info);
+}
+
+void ChatClient::processMessage(const PasswordChangeResult *msg)
+{
+    QString result = msg->result;
+    emit changePasswordResult(result);
 }
 

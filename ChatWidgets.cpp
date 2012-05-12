@@ -157,7 +157,8 @@ ChatTabWidget::ChatTabWidget(QWidget *parent) :
     connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseResult(int)));
 }
 
-ChatTabWidget::ChatTabWidget(QWidget *parent, QMap<QString, QString> *smilesMap)
+ChatTabWidget::ChatTabWidget(QWidget *parent, QMap<QString, QString> *smilesMap) :
+    QTabWidget(parent)
 {
     m_smilesMap = smilesMap;
     setTabsClosable(true);
@@ -284,7 +285,10 @@ void ChatTabWidget::currentChangedHander(int index)
 
 void ChatTabWidget::replyUserInformationClicked(QString nick)
 {
-    emit onUserInformationClicked(nick);
+    if(nick == m_ownerNick)
+        emit showOwnerInfo();
+    else
+        emit onUserInformationClicked(nick);
 }
 
 void ChatTabWidget::replyPrivateMessageClicked(QString nick)

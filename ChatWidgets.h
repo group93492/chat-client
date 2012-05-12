@@ -118,6 +118,7 @@ signals:
     void onPrivateMessageClicked(QString nick);
     void onNickClicked(QString nick);
     void lastMessage(QString message);
+    void showOwnerInfo();
 };
 
 #endif // GENERALCHATWIDGET_H

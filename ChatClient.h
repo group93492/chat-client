@@ -27,6 +27,7 @@ private:
     void processMessage(const ChannelThemeChanged *msg);
     void processMessage(const ClientStatusChanged *msg);
     void processMessage(const UserInfoMessage *msg);
+    void processMessage(const PasswordChangeResult *msg);
 
 public:
     enum ChannelListType
@@ -38,8 +39,8 @@ public:
     void setUserInfo(const QString &un, const QString &pass);
     QString username();
     bool start(QTcpSocket *socket);
-    void shutdown();
     void requestLists();
+    void shutdown();
 
 signals:
     void errorOccured(const QString &);
@@ -53,6 +54,8 @@ signals:
     void channelThemeChange(QString channel, QString theme);
     void clientStatusChanged(QString username, QString status);
     void userInfo(QString username, QString info);
+    void ownerInfo(QString username, QString info);
+    void changePasswordResult(QString result);
 
 private slots:
     void clientGotNewMessage();
@@ -68,6 +71,8 @@ public slots:
     void changeChannelTheme(QString channel, QString theme);
     void changeStatus(QString status);
     void userInfoRequest(QString username);
+    void sendOwnerProfile(QString username, QString info);
+    void changePassword(QString oldPass, QString newPass);
 };
 
 #endif // CHATCLIENT_H

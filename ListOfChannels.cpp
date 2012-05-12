@@ -20,6 +20,7 @@ ListOfChannels::~ListOfChannels()
 void ListOfChannels::showEvent(QShowEvent *event)
 {
     ui->joinStatusLabel->clear();
+    event->accept();
 }
 
 void ListOfChannels::setAllChannelsList(QMap<QString, QString> list)

@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QTableWidgetItem>
+#include <QShowEvent>
 #include "ChatClient.h"
 #include "createchanneldialog.h"
 

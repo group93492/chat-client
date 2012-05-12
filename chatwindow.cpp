@@ -41,15 +41,21 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(m_client, SIGNAL(channelThemeChange(QString,QString)), m_tabWidget, SLOT(changeTheme(QString,QString)));
     connect(m_client, SIGNAL(clientStatusChanged(QString,QString)), m_tabWidget, SLOT(setUserStatus(QString,QString)));
     connect(m_client, SIGNAL(userInfo(QString,QString)), &m_userInfoDialog, SLOT(showInfo(QString,QString)));
+    connect(m_client, SIGNAL(ownerInfo(QString,QString)), &m_ownerProfile, SLOT(setInfo(QString,QString)));
+    connect(m_client, SIGNAL(changePasswordResult(QString)), &m_ownerProfile, SLOT(setResult(QString)));
     //connect m_tabWidget
     connect(m_tabWidget, SIGNAL(lastMessage(QString)), this, SLOT(setText(QString)));
     connect(m_tabWidget, SIGNAL(onNickClicked(QString)), this, SLOT(insertText(QString)));
     connect(m_tabWidget, SIGNAL(leaveChannel(QString)), m_client, SLOT(leaveChannel(QString)));
     connect(m_tabWidget, SIGNAL(themeChanged(QString,QString)), m_client, SLOT(changeChannelTheme(QString,QString)));
     connect(m_tabWidget, SIGNAL(onUserInformationClicked(QString)), m_client, SLOT(userInfoRequest(QString)));
+    connect(m_tabWidget, SIGNAL(showOwnerInfo()), &m_ownerProfile, SLOT(show()));
     //connect m_channelListDialog
     connect(m_channelListDialog, SIGNAL(requestCreateChannel(QString,QString,QString)), m_client, SLOT(createChannelRequest(QString,QString,QString)));
     connect(m_channelListDialog, SIGNAL(requestJoinChannel(QString)), m_client, SLOT(joinChannelRequest(QString)));
+    //connect m_ownerProfile
+    connect(&m_ownerProfile, SIGNAL(changeInfo(QString,QString)), m_client, SLOT(sendOwnerProfile(QString,QString)));
+    connect(&m_ownerProfile, SIGNAL(changePassword(QString,QString)), m_client, SLOT(changePassword(QString,QString)));
     //connect mainwindow
     connect(this, SIGNAL(sendMessage(const QString&, const QString&)), m_client, SLOT(sendChannelMessage(const QString&, const QString&)));
     connect(this, SIGNAL(sendAllChannelsList(QMap<QString,QString>)), m_channelListDialog, SLOT(setAllChannelsList(QMap<QString,QString>)));
@@ -90,8 +96,6 @@ void ChatWindow::postMessage()
 {
     QString body = ui->messageEdit->text();
     QString receiver = m_tabWidget->currentChannel();
-    //if (receiver.isEmpty())
-        //receiver = "main";
     emit sendMessage(receiver, body);
     ui->messageEdit->clear();
 }
