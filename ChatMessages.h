@@ -27,7 +27,9 @@ enum ChatMessageType
     cmtChannelCreateResult,
     cmtChannelUserList,
     cmtChannelThemeChanged,
-    cmtClientStatusChanged
+    cmtClientStatusChanged,
+    cmtUserInfoRequest,
+    cmtUserInfoMessage
     /*etc*/
 };
 
@@ -274,6 +276,27 @@ public:
     ClientStatusChanged(QDataStream &stream);
     QString username;
     QString status;
+    bool pack(QDataStream &stream) const;
+    bool unpack(QDataStream &stream);
+};
+
+class UserInfoRequest : public ChatMessageBody
+{
+public:
+    UserInfoRequest();
+    UserInfoRequest(QDataStream &stream);
+    QString username;
+    bool pack(QDataStream &stream) const;
+    bool unpack(QDataStream &stream);
+};
+
+class UserInfoMessage : public ChatMessageBody
+{
+public:
+    UserInfoMessage();
+    UserInfoMessage(QDataStream &stream);
+    QString username;
+    QString info;
     bool pack(QDataStream &stream) const;
     bool unpack(QDataStream &stream);
 };

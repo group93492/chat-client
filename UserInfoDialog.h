@@ -14,9 +14,11 @@ class UserInfoDialog : public QDialog
 public:
     explicit UserInfoDialog(QWidget *parent = 0);
     ~UserInfoDialog();
-    
+public slots:
+    void showInfo(QString username, QString info);
+
 private slots:
-    void on_pushButton_clicked();
+    void on_okButton_clicked();
 
 private:
     Ui::UserInfoDialog *ui;

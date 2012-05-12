@@ -6,6 +6,7 @@ UserInfoDialog::UserInfoDialog(QWidget *parent) :
     ui(new Ui::UserInfoDialog)
 {
     ui->setupUi(this);
+    setWindowIcon(QIcon("icon.png"));
 }
 
 UserInfoDialog::~UserInfoDialog()
@@ -13,7 +14,15 @@ UserInfoDialog::~UserInfoDialog()
     delete ui;
 }
 
-void UserInfoDialog::on_pushButton_clicked()
+void UserInfoDialog::showInfo(QString username, QString info)
+{
+    setWindowTitle(username + " - info");
+    ui->usernameEdit->setText(username);
+    ui->infoEdit->setText(info);
+    this->show();
+}
+
+void UserInfoDialog::on_okButton_clicked()
 {
     this->hide();
 }

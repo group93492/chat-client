@@ -34,11 +34,13 @@ ChatWindow::ChatWindow(QWidget *parent) :
     connect(m_client, SIGNAL(userList(QString,QStringList)), m_tabWidget, SLOT(setUserList(QString,QStringList)));
     connect(m_client, SIGNAL(channelThemeChange(QString,QString)), m_tabWidget, SLOT(changeTheme(QString,QString)));
     connect(m_client, SIGNAL(clientStatusChanged(QString,QString)), m_tabWidget, SLOT(setUserStatus(QString,QString)));
+    connect(m_client, SIGNAL(userInfo(QString,QString)), &m_userInfoDialog, SLOT(showInfo(QString,QString)));
     //connect m_tabWidget
     connect(m_tabWidget, SIGNAL(lastMessage(QString)), this, SLOT(setText(QString)));
     connect(m_tabWidget, SIGNAL(onNickClicked(QString)), this, SLOT(insertText(QString)));
     connect(m_tabWidget, SIGNAL(leaveChannel(QString)), m_client, SLOT(leaveChannel(QString)));
     connect(m_tabWidget, SIGNAL(themeChanged(QString,QString)), m_client, SLOT(changeChannelTheme(QString,QString)));
+    connect(m_tabWidget, SIGNAL(onUserInformationClicked(QString)), m_client, SLOT(userInfoRequest(QString)));
     //connect m_channelListDialog
     connect(m_channelListDialog, SIGNAL(requestCreateChannel(QString,QString,QString)), m_client, SLOT(createChannelRequest(QString,QString,QString)));
     connect(m_channelListDialog, SIGNAL(requestJoinChannel(QString)), m_client, SLOT(joinChannelRequest(QString)));

@@ -138,6 +138,13 @@ void ChatClient::clientGotNewMessage()
                 delete msg;
                 break;
             }
+        case cmtUserInfoMessage:
+            {
+                UserInfoMessage * msg = new UserInfoMessage(input);
+                processMessage(msg);
+                delete msg;
+                break;
+            }
         default:
             {
                 qDebug() << "Client received unknown-typed message" << msgType;
@@ -238,6 +245,14 @@ void ChatClient::changeStatus(QString status)
     delete msg;
 }
 
+void ChatClient::userInfoRequest(QString username)
+{
+    UserInfoRequest *msg = new UserInfoRequest();
+    msg->username = username;
+    sendMessageToServer(msg);
+    delete msg;
+}
+
 void ChatClient::sendMessageToServer(ChatMessageBody *msgBody) const
 {
     QByteArray arrBlock;
@@ -314,5 +329,12 @@ void ChatClient::processMessage(const ClientStatusChanged *msg)
     QString status = msg->status;
     QString username = msg->username;
     emit clientStatusChanged(username, status);
+}
+
+void ChatClient::processMessage(const UserInfoMessage *msg)
+{
+    QString username = msg->username;
+    QString info = msg->info;
+    emit userInfo(username, info);
 }
 

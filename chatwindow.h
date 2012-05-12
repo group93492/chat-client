@@ -9,6 +9,7 @@
 #include "ListOfChannels.h"
 #include "ChatWidgets.h"
 #include "StatusDialog.h"
+#include "UserInfoDialog.h"
 
 namespace Ui {
 class ChatWindow;
@@ -29,6 +30,7 @@ private:
     ListOfChannels *m_channelListDialog;
     ChatTabWidget *m_tabWidget;
     StatusDialog m_statusDialog;
+    UserInfoDialog m_userInfoDialog;
     void setMyChannelList(QMap<QString,QString> list);
 
 protected:
