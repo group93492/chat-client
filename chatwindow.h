@@ -10,6 +10,7 @@
 #include "ChatWidgets.h"
 #include "StatusDialog.h"
 #include "UserInfoDialog.h"
+#include "OwnerProfile.h"
 
 namespace Ui {
 class ChatWindow;
@@ -29,8 +30,10 @@ private:
     smilesWidget *m_smiles;
     ListOfChannels *m_channelListDialog;
     ChatTabWidget *m_tabWidget;
+    QMenu m_menu;
     StatusDialog m_statusDialog;
     UserInfoDialog m_userInfoDialog;
+    OwnerProfile m_ownerProfile;
     void setMyChannelList(QMap<QString,QString> list);
 
 protected:
@@ -51,6 +54,8 @@ private slots:
     void getChannelJoinResult(QString channelName, bool result);
     void onChangeStatus(QString status);
     void onChangeStatus(int index);
+
+    void on_menuButton_clicked();
 
 public slots:
     void connectToServer(QString username, QString password, QTcpSocket *socket);

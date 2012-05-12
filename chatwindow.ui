@@ -39,7 +39,7 @@
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
       <item>
-       <layout class="QHBoxLayout" name="infoLayout" stretch="6,1,2">
+       <layout class="QHBoxLayout" name="infoLayout" stretch="0,6,1,2">
         <property name="spacing">
          <number>0</number>
         </property>
@@ -47,7 +47,14 @@
          <number>0</number>
         </property>
         <item>
-         <spacer name="horizontalSpacer">
+         <widget class="QPushButton" name="menuButton">
+          <property name="text">
+           <string>Menu</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="statusSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -95,7 +102,7 @@
       <item>
        <layout class="QHBoxLayout" name="buttonsLayout">
         <property name="spacing">
-         <number>10</number>
+         <number>0</number>
         </property>
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
@@ -117,20 +124,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>35</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Your profile</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_2">
+         <spacer name="buttonsSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>

@@ -17,6 +17,12 @@ ChatWindow::ChatWindow(QWidget *parent) :
     m_tabWidget = new ChatTabWidget(this, m_smiles->getSmiles());
     ui->chatLayout->addWidget(m_tabWidget);
     m_statusDialog.setModal(true);
+    //menu for menuButton
+    m_menu.addAction("See all channels", m_channelListDialog, SLOT(show()));
+    m_menu.addAction("Your profile", &m_ownerProfile, SLOT(show()));
+    m_menu.addSeparator();
+    m_menu.addAction("About programm");
+    m_menu.addAction("About Qt", qApp, SLOT(aboutQt()));
     //combobox
     ui->statusComboBox->addItem("Online");
     ui->statusComboBox->addItem("Away");
@@ -147,4 +153,10 @@ void ChatWindow::onChangeStatus(int index)
             break;
         }
     }
+}
+
+void ChatWindow::on_menuButton_clicked()
+{
+    m_menu.move(this->geometry().topLeft() + ui->menuButton->geometry().bottomLeft());
+    m_menu.show();
 }
