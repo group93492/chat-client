@@ -9,6 +9,9 @@ GeneralChatWidget::GeneralChatWidget(QWidget *parent, QMap<QString, QString> *sm
     m_textBrowser = new chatTextBrowser(this, smilesMap);
     m_userList = new UserListWidget(this, m_users);
     m_label = new QLabel("Users in channel: " + QString::number(m_userList->count()), this);
+    m_statusOnline.addFile("status_availible.png");
+    m_statusAway.addFile("status_away.png");
+    m_statusDTD.addFile("status_dnd.png");
     m_theme->setFrameShape(QFrame::StyledPanel);
     m_theme->setFrameShadow(QFrame::Raised);
     m_theme->setAlignment(Qt::AlignHCenter);
@@ -44,10 +47,25 @@ void GeneralChatWidget::setUserStatus(QString nick, QString status)
 {
     if(m_users->contains(nick))
     {
+        QListWidgetItem *item = m_userList->takeItem(m_users->indexOf(nick));
         if(status != "")
-            m_userList->item(m_users->indexOf(nick))->setText(nick + "[" + status + "]");
+        {
+            item->setText(nick + "[" + status + "]");
+            if(status == "Away")
+                item->setIcon(m_statusAway);
+            else
+                if(status == "Don't disturb")
+                    item->setIcon(m_statusDTD);
+                else
+                    item->setIcon(m_statusOnline);
+        }
         else
-            m_userList->item(m_users->indexOf(nick))->setText(nick);
+        {
+            item->setText(nick);
+            item->setIcon(m_statusOnline);
+        }
+        m_userList->addItem(item);
+        m_userList->sortItems();
     }
 }
 
@@ -155,6 +173,7 @@ ChatTabWidget::ChatTabWidget(QWidget *parent) :
 {
     setTabsClosable(true);
     connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseResult(int)));
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChangedHandler(int)));
 }
 
 ChatTabWidget::ChatTabWidget(QWidget *parent, QMap<QString, QString> *smilesMap) :
@@ -163,6 +182,11 @@ ChatTabWidget::ChatTabWidget(QWidget *parent, QMap<QString, QString> *smilesMap)
     m_smilesMap = smilesMap;
     setTabsClosable(true);
     connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseResult(int)));
+    connect(this, SIGNAL(currentChanged(int)), this, SLOT(currentChangedHandler(int)));
+    m_channelIcon.addFile("common_channel.png");
+    m_PMIcon.addFile("private_channel.png");
+    m_newMsgIcon.addFile("common_channel_new_message.png");
+    m_newMsgPMIcon.addFile("private_channel_new_message.png");
 }
 
 QString ChatTabWidget::currentChannel()
@@ -275,7 +299,7 @@ void ChatTabWidget::tabCloseResult(int index)
     }
 }
 
-void ChatTabWidget::currentChangedHander(int index)
+void ChatTabWidget::currentChangedHandler(int index)
 {
     if(m_channels.contains(tabText(index)))
         setTabIcon(index, m_channelIcon);

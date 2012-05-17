@@ -54,6 +54,9 @@ private:
     QLabel *m_label;
     UserListWidget *m_userList;
     QStringList *m_users;
+    QIcon m_statusOnline;
+    QIcon m_statusAway;
+    QIcon m_statusDTD;
 private slots:
     void replyUserInformationClicked(QString nick);
     void replyPrivateMessageClicked(QString nick);
@@ -90,7 +93,7 @@ private:
     QIcon m_newMsgPMIcon;
 private slots:
     void tabCloseResult(int index);
-    void currentChangedHander(int index);
+    void currentChangedHandler(int index);
     void replyUserInformationClicked(QString nick);
     void replyPrivateMessageClicked(QString nick);
     void replyNickClicked(QString nick);
