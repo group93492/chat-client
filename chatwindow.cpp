@@ -21,7 +21,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     m_menu.addAction("See all channels", m_channelListDialog, SLOT(show()));
     m_menu.addAction("Your profile", &m_ownerProfile, SLOT(show()));
     m_menu.addSeparator();
-    m_menu.addAction("About programm");
+    m_menu.addAction("About program");
     m_menu.addAction("About Qt", qApp, SLOT(aboutQt()));
     //combobox
     ui->statusComboBox->addItem("Online");
@@ -139,6 +139,7 @@ void ChatWindow::onChangeStatus(QString status)
 
 void ChatWindow::onChangeStatus(int index)
 {
+    //what the hell is going on here?
     switch(index)
     {
     case 0:
