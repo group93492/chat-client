@@ -120,7 +120,7 @@ void UserListWidget::contextMenuEvent(QContextMenuEvent *e)
     if(this->itemAt(e->pos()) != NULL)
     {
         QMenu *menu = new QMenu();
-        menu->addAction("Send private message", this, SLOT(sendPMSignal()));
+        //menu->addAction("Send private message", this, SLOT(sendPMSignal()));
         menu->addAction("Profile", this, SLOT(sendInfoSignal()));
         menu->exec(e->globalPos());
         delete menu;
