@@ -330,9 +330,15 @@ void ChatClient::processMessage(const ChannelSystemMessage *msg)
 
 void ChatClient::processMessage(const ChannelUserList *msg)
 {
-    QStringList list = msg->userList;
+    QStringList list = msg->userList.keys();
     QString channel = msg->channelName;
     emit userList(channel, list);
+    QMap<QString, QString> userList = msg->userList;
+    QMap<QString, QString>::iterator it = userList.begin();
+    for(; it != userList.end(); ++it)
+    {
+        emit clientStatusChanged(it.key(), it.value());
+    }
 }
 
 void ChatClient::processMessage(const ChannelCreateResult *msg)

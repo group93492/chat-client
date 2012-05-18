@@ -255,7 +255,7 @@ public:
     ChannelUserList();
     ChannelUserList(QDataStream &stream);
     QString channelName;
-    QStringList userList;
+    QMap<QString, QString> userList;
     bool pack(QDataStream &stream) const;
     bool unpack(QDataStream &stream);
 };
