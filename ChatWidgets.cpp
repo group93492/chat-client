@@ -48,7 +48,7 @@ void GeneralChatWidget::setUserStatus(QString nick, QString status)
     if(m_users->contains(nick))
     {
         QListWidgetItem *item = m_userList->takeItem(m_users->indexOf(nick));
-        if(status != "")
+        if(status != "Online" && status != "")
         {
             item->setText(nick + "[" + status + "]");
             if(status == "Away")
