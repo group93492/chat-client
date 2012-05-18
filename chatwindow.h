@@ -11,6 +11,7 @@
 #include "StatusDialog.h"
 #include "UserInfoDialog.h"
 #include "OwnerProfile.h"
+#include "AboutProgrammDialog.h"
 
 namespace Ui {
 class ChatWindow;
@@ -34,6 +35,7 @@ private:
     StatusDialog m_statusDialog;
     UserInfoDialog m_userInfoDialog;
     OwnerProfile m_ownerProfile;
+    AboutProgrammDialog m_aboutProgram;
     void setMyChannelList(QMap<QString,QString> list);
 
 protected:

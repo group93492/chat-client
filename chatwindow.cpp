@@ -21,7 +21,7 @@ ChatWindow::ChatWindow(QWidget *parent) :
     m_menu.addAction("See all channels", m_channelListDialog, SLOT(show()));
     m_menu.addAction("Your profile", &m_ownerProfile, SLOT(show()));
     m_menu.addSeparator();
-    m_menu.addAction("About programm");
+    m_menu.addAction("About program", &m_aboutProgram, SLOT(show()));
     m_menu.addAction("About Qt", qApp, SLOT(aboutQt()));
     //combobox
     ui->statusComboBox->addItem("Online");

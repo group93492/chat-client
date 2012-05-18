@@ -24,7 +24,8 @@ SOURCES +=  main.cpp\
     ChannelThemeDialog.cpp \
     UserInfoDialog.cpp \
     StatusDialog.cpp \
-    OwnerProfile.cpp
+    OwnerProfile.cpp \
+    AboutProgrammDialog.cpp
 
 HEADERS  += chatwindow.h \
             ChatClient.h \
@@ -39,7 +40,8 @@ HEADERS  += chatwindow.h \
     ChannelThemeDialog.h \
     UserInfoDialog.h \
     StatusDialog.h \
-    OwnerProfile.h
+    OwnerProfile.h \
+    AboutProgrammDialog.h
 
 FORMS    += chatwindow.ui \
     ChatAuthWindow.ui \
@@ -49,4 +51,5 @@ FORMS    += chatwindow.ui \
     ChannelThemeDialog.ui \
     UserInfoDialog.ui \
     StatusDialog.ui \
-    OwnerProfile.ui
+    OwnerProfile.ui \
+    AboutProgrammDialog.ui
